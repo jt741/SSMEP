@@ -7,7 +7,7 @@ import numpy as np
 #if you need to make same plots over and over again with different data:
 # https://matplotlib.org/3.5.0/tutorials/introductory/usage.html#the-object-oriented-interface-and-the-pyplot-interface
 
-
+# building blocks for more complicated plots / for quick data visualisation
 def simple_plot(title, x_data, x_label,  y_data, y_label ):
     fig, ax = plt.subplots()
     ax.plot(x_data, y_data)
@@ -23,6 +23,9 @@ def log_plot(ax:plt.Axes, logx:bool=True, logy:bool=True):
     plt.show()
 
 
+
+
+# from ml for ref
 def extract_single_state(full_state_matrix, idx_to_extract):
     extracted_state = []
     for state in full_state_matrix:
