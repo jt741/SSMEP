@@ -23,6 +23,8 @@ class MiddleEar:
     """
     def __init__(self, circuit_params: Sequence[dict]):
         self.circuit_params = circuit_params
+        # TODO: could use a flag system with if-else and custom one? 
+
 
         #create middle ear upon initialisation
         self.middle_ear = []

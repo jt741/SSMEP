@@ -1,58 +1,27 @@
-import cmath
+from plotting_helper import (
+    generate_and_plot_me_impedance_freq_resp,
+    compare_ear_impedances,
+)
 
-import numpy as np
-from plotting_helper import log_plot, simple_plot
-
-from circuit_and_resonant_branches import CircuitHelpers
-from middle_ear_maker import HEALTHY_PARAMS, MiddleEar
-
-
-def generate_impedance_frequency_response(
-    branches,
-    start_f=100,
-    stop_f=8000,
-):
-    frequencies = np.linspace(start=start_f, stop=stop_f, num=1000)
-    middle_ear_impedances_magnitude = []
-    middle_ear_impedances_phase = []
-    for f in frequencies:
-        Z_me = CircuitHelpers.branch_parallel_impedances(branches, f)
-
-        middle_ear_impedances_magnitude.append(abs(Z_me))
-        middle_ear_impedances_phase.append(cmath.phase(Z_me))
-
-    return frequencies, middle_ear_impedances_magnitude, middle_ear_impedances_phase
+from middle_ear_maker import HEALTHY_PARAMS, FULL_PARAMS, MiddleEar
 
 
 # healthy ear
 healthy_middle_ear = MiddleEar(HEALTHY_PARAMS).get_middle_ear()
+generate_and_plot_me_impedance_freq_resp("Healthy Middle Ear", healthy_middle_ear)
 
-
-
-# might want to continue messing with these wrappers
-
-healthy_f, healthy_zme_mag, healthy_zme_phase = generate_impedance_frequency_response(
-    healthy_middle_ear
+# full ear
+fully_effused_middle_ear = MiddleEar(FULL_PARAMS).get_middle_ear()
+generate_and_plot_me_impedance_freq_resp(
+    "Fully Effused Middle Ear", fully_effused_middle_ear
 )
-ax = simple_plot(
-    "Healthy Ear Impedance",
-    healthy_f,
-    "frequency (Hz)",
-    healthy_zme_mag,
-    "Impedance (magnitude)",
-)
-log_plot(ax)
 
-# to get the phase plot in cyc you would have to divide radians by 2pi
-ax_ph = simple_plot(
-    "Healthy Ear Impedance",
-    healthy_f,
-    "frequency (Hz)",
-    healthy_zme_phase,
-    "Impedance (phase) (radias)",
-)
-log_plot(ax_ph, logy=False)
-
+# would be nice to plot these two on the same graph (we are comparing after all)!
+ear_compare_dict = {
+    "Healthy": healthy_middle_ear,
+    "Fully Effused": fully_effused_middle_ear,
+}
+compare_ear_impedances(ear_compare_dict)
 
 # you're comparing with figure 5 in Merchant
 

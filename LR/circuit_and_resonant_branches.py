@@ -1,3 +1,4 @@
+from typing import Sequence
 import numpy as np
 
 
@@ -21,7 +22,7 @@ class CircuitHelpers:
         return 1 / running_sum
 
     @staticmethod
-    def branch_parallel_impedances(branch_list:tuple, f:int):
+    def branch_parallel_impedances(branch_list:Sequence, f:int):
         running_sum = 0
         for branch in branch_list:
             running_sum += 1/branch.get_impedance(2*np.pi*f)
