@@ -25,7 +25,7 @@ def get_acoustic_reflectometry_response(frequencies: list, reflection_coeffs: li
     """trying to mimic what a microphone would measure x away from TM
     not sure why it isn't working
     """
-    x = -30 * 10**-3    # this is negative because of how the axes are defined
+    x = -21 * 10**-3    # this is negative because of how the axes are defined
     c = 343
 
     p_list = []
@@ -33,7 +33,7 @@ def get_acoustic_reflectometry_response(frequencies: list, reflection_coeffs: li
         forward = np.exp(1j * 2 * np.pi * f * (- x / c))
         backward = reflection_coeffs[i] * np.exp(1j * 2 * np.pi * f * (x / c))
         p = forward + backward
-        p_list.append(p.real)
+        p_list.append(abs(p)) # need to understand why we are plotting the absolute value instead of the real value 
 
     return p_list
 
@@ -59,10 +59,8 @@ def get_WAI_freq_resp(
     for f in frequencies:
         Z_me = CircuitHelpers.branch_parallel_impedances(middle_ear_branches, f)
            
-
         middle_ear_impedances.append(abs(Z_me))
 
-    
         reflection_coeff_at_ear_drum = (Z_me - Z_0)/(Z_me + Z_0)
 
         reflection_coeffs.append(reflection_coeff_at_ear_drum)  
@@ -110,7 +108,6 @@ plot_multiple_with_labels(
     "Pressure / Forward Wave Amplitude",
     ar_resp_dict,
 )
-
 
 
 impedances_plotting_dict = {
