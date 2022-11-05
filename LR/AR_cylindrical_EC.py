@@ -9,12 +9,12 @@ def get_cylindrical_ear_canal_constants():
     """model ear canal as narrow duct --> inductance analogy
     also return the characteristic impedance.
     """
-    roe = 1.204
-    l = 21 * 10**-3
+    roe = 1.225 # density of air
+    l = 21 * 10**-3 #length of ear canal
     A = 44.18 * 10**-6  # Merchant takes CSA to be 44.18mm^2
-    c = 343
+    c = 343 #speed of sound in air
 
-    L = roe * l / A  # inductance
+    L = roe * l / A  # equivalent inductance
 
     Z0 = roe * c / A  # characteristic impedance
 
@@ -23,14 +23,14 @@ def get_cylindrical_ear_canal_constants():
 
 def get_acoustic_reflectometry_response(frequencies: list, reflection_coeffs: list):
     """trying to mimic what a microphone would measure x away from TM
-    need to check the logic of what i am doing (confused about reflection coefficients)
+    not sure why it isn't working
     """
-    x = 21 * 10**-3
+    x = -30 * 10**-3    # this is negative because of how the axes are defined
     c = 343
 
     p_list = []
     for i, f in enumerate(frequencies):
-        forward = np.exp(1j * 2 * np.pi * f * (-1 * x / c))
+        forward = np.exp(1j * 2 * np.pi * f * (- x / c))
         backward = reflection_coeffs[i] * np.exp(1j * 2 * np.pi * f * (x / c))
         p = forward + backward
         p_list.append(p.real)
@@ -41,37 +41,34 @@ def get_acoustic_reflectometry_response(frequencies: list, reflection_coeffs: li
 def get_WAI_freq_resp(
     middle_ear_branches: list,
     start_f: int = 100,
-    stop_f: int = 8000,
+    stop_f: int = 10000,
 ):
     """
     generate data for WAI frequency response
     """
     # generate reflection coeffs
     frequencies = np.linspace(start=start_f, stop=stop_f, num=1000)
-    L, Z_0 = get_cylindrical_ear_canal_constants()
+    _, Z_0 = get_cylindrical_ear_canal_constants() # L is not used at the moment
 
     reflection_coeffs = []
 
-    absorbances = []
+    absorbances = []  #not plotted at the moment
 
-    impedances = []
+    middle_ear_impedances = []
 
     for f in frequencies:
         Z_me = CircuitHelpers.branch_parallel_impedances(middle_ear_branches, f)
-        Z_ec = 1j * 2 * np.pi * f * L
+           
 
-        Z_total = Z_ec + Z_me
+        middle_ear_impedances.append(abs(Z_me))
 
-        impedances.append(abs(Z_total))
+    
+        reflection_coeff_at_ear_drum = (Z_me - Z_0)/(Z_me + Z_0)
 
-        reflection_coeff = (Z_total - Z_0) / (
-            Z_total + Z_0
-        )  # also known as 'reflectance' in Merchant's paper
+        reflection_coeffs.append(reflection_coeff_at_ear_drum)  
+        absorbances.append(1 - abs(reflection_coeff_at_ear_drum) ** 2)
 
-        reflection_coeffs.append(reflection_coeff)  
-        absorbances.append(1 - abs(reflection_coeff) ** 2)
-
-    return frequencies, reflection_coeffs, absorbances, impedances
+    return frequencies, reflection_coeffs, absorbances, middle_ear_impedances
 
 
 fully_effused_middle_ear = MiddleEar(FULL_PARAMS).get_middle_ear()
@@ -90,22 +87,10 @@ reflection_coeffs_dict = {
     "healthy": [frequencies_h, reflection_coeffs_h],
 }
 plot_multiple_with_labels(
-    "Reflection coeff vs Frequency",
+    "Reflection Coefficient at Ear Drum vs Frequency",
     "Frequency (Hz)",
-    "Reflection coeff",
+    "Reflection Coefficient at Ear Drum",
     reflection_coeffs_dict,
-)
-
-
-energy_reflectance_dict = {
-    "fully effused": [frequencies, 1-np.array(absorbances)],
-    "healthy": [frequencies_h, 1-np.array(absorbances_h)],
-}
-plot_multiple_with_labels(
-    "Energy Reflectance vs Frequency",
-    "Frequency (Hz)",
-    "Energy Reflectance",
-    energy_reflectance_dict,
 )
 
 
@@ -120,46 +105,23 @@ ar_resp_dict = {
     ],
 }
 plot_multiple_with_labels(
-    "pressure field at measurement point vs Frequency",
+    "Pressure at measurement point vs Frequency",
     "Frequency (Hz)",
-    "Pressure ()",
+    "Pressure / Forward Wave Amplitude",
     ar_resp_dict,
 )
 
-
-absorbance_plotting_dict = {
-    "fully effused": [frequencies, absorbances],
-    "healthy": [frequencies_h, absorbances_h],
-}
-# Absorbance will NOT match paper bc we are using different model for EC
-plot_multiple_with_labels(
-    "Absorbance vs Frequency",
-    "Frequency (Hz)",
-    "Absorbance",
-    absorbance_plotting_dict,
-    log_code="x",
-)
 
 
 impedances_plotting_dict = {
     "fully effused": [frequencies, impedances],
     "healthy": [frequencies_h, impedances_h],
 }
-# This is technically the total impedance (Zec + Zme), but it will be dominated by Zme, and since that was taken from Merchant directly, we expect it to match
 plot_multiple_with_labels(
-    "Total Impedance vs Frequency",
+    "Middle Ear Impedance vs Frequency",
     "Frequency (Hz)",
-    "Impedance Magnitude (mks ohm)",
+    "Middle Ear Impedance Magnitude (mks ohm)",
     impedances_plotting_dict,
     log_code="xy",
 )
 
-
-####################### SCraps ############
-
-
-# reflectance_plotting_dict = {
-#     "fully effused": [frequencies, reflection_coeffs, "tab:red"],
-#     "healthy": [frequencies_h, reflection_coeffs_h, "tab:green"],
-# }
-# plot_multiple_with_labels("Reflectance vs Frequency", "Frequency (Hz)", "Reflectance", reflectance_plotting_dict, log_code="x")
