@@ -59,7 +59,7 @@ def get_WAI_freq_resp(
     for f in frequencies:
         Z_me = CircuitHelpers.branch_parallel_impedances(middle_ear_branches, f)
            
-        middle_ear_impedances.append(abs(Z_me))
+        middle_ear_impedances.append(Z_me)
 
         reflection_coeff_at_ear_drum = (Z_me - Z_0)/(Z_me + Z_0)
 
@@ -111,8 +111,8 @@ plot_multiple_with_labels(
 
 
 impedances_plotting_dict = {
-    "fully effused": [frequencies, impedances],
-    "healthy": [frequencies_h, impedances_h],
+    "fully effused": [frequencies, abs(np.array(impedances))],
+    "healthy": [frequencies_h, abs(np.array(impedances_h))],
 }
 plot_multiple_with_labels(
     "Middle Ear Impedance vs Frequency",
