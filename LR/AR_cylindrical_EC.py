@@ -3,6 +3,7 @@ from plotting_helper import plot_multiple_with_labels
 
 from circuit_and_resonant_branches import CircuitHelpers
 from middle_ear_maker import FULL_PARAMS, MiddleEar, HEALTHY_PARAMS
+from extracted_data import FIG5_HEALTHY_X, FIG5_HEALTHY_Y, FIG5_FULL_X, FIG5_FULL_Y, WAVELY_FULL_X, WAVELY_FULL_Y, WAVELY_HEALTHY_X, WAVELY_HEALTHY_Y
 
 
 def get_cylindrical_ear_canal_constants():
@@ -22,10 +23,9 @@ def get_cylindrical_ear_canal_constants():
 
 
 def get_acoustic_reflectometry_response(frequencies: list, reflection_coeffs: list):
-    """trying to mimic what a microphone would measure x away from TM
-    not sure why it isn't working
-    """
-    x = -21 * 10**-3    # this is negative because of how the axes are defined
+    """trying to mimic what a microphone would measure x away from TM"""
+    #x = -28.6 * 10**-3    # this is negative because of how the axes are defined
+    x = -21*10**-3
     c = 343
 
     p_list = []
@@ -33,7 +33,7 @@ def get_acoustic_reflectometry_response(frequencies: list, reflection_coeffs: li
         forward = np.exp(1j * 2 * np.pi * f * (- x / c))
         backward = reflection_coeffs[i] * np.exp(1j * 2 * np.pi * f * (x / c))
         p = forward + backward
-        p_list.append(abs(p)) # need to understand why we are plotting the absolute value instead of the real value 
+        p_list.append(abs(p)) # plot absolute instead of real value 
 
     return p_list
 
@@ -101,6 +101,14 @@ ar_resp_dict = {
         frequencies_h,
         get_acoustic_reflectometry_response(frequencies_h, reflection_coeffs_h),
     ],
+    "fully effused (extracted [Chan])": [
+        WAVELY_FULL_X,
+        WAVELY_FULL_Y,
+    ],
+    "healthy (extracted [Chan])": [
+        WAVELY_HEALTHY_X,
+        WAVELY_HEALTHY_Y,
+    ],
 }
 plot_multiple_with_labels(
     "Pressure at measurement point vs Frequency",
@@ -113,6 +121,8 @@ plot_multiple_with_labels(
 impedances_plotting_dict = {
     "fully effused": [frequencies, abs(np.array(impedances))],
     "healthy": [frequencies_h, abs(np.array(impedances_h))],
+    # "healthy (extracted)": [FIG5_HEALTHY_X,FIG5_HEALTHY_Y],
+    # "full (extracted)": [FIG5_FULL_X,FIG5_FULL_Y]
 }
 plot_multiple_with_labels(
     "Middle Ear Impedance vs Frequency",

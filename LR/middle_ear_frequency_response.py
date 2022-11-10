@@ -1,6 +1,7 @@
 from plotting_helper import (
     generate_and_plot_me_impedance_freq_resp,
     compare_ear_impedances,
+    plot_multiple_with_labels
 )
 
 from middle_ear_maker import HEALTHY_PARAMS, FULL_PARAMS, MiddleEar
@@ -25,5 +26,3 @@ compare_ear_impedances(ear_compare_dict)
 
 # you're comparing with figure 5 in Merchant
 
-# TODO: then use the 6 tapered cones and compare graphs and do AR again and could also do Tympanometry
-# TODO: could compare tapered cones to cylinder (with what tho.....)
