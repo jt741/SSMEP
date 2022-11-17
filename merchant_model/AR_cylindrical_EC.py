@@ -3,7 +3,7 @@ from plotting_utils.plotting_helper import plot_multiple_with_labels
 
 from .circuit_and_resonant_branches import CircuitHelpers
 from .MerchantMiddleEar import FULL_PARAMS, MiddleEar, HEALTHY_PARAMS
-from plotting_utils.extracted_data import MERCHANT_FIG5_HEALTHY_X, MERCHANT_FIG5_HEALTHY_Y, MERCHANT_FIG5_FULL_X, MERCHANT_FIG5_FULL_Y, WAVELY_FULL_X, WAVELY_FULL_Y, WAVELY_HEALTHY_X, WAVELY_HEALTHY_Y
+from plotting_utils.extracted_data import WAVELY_FULL_X, WAVELY_FULL_Y, WAVELY_HEALTHY_X, WAVELY_HEALTHY_Y
 
 
 def get_cylindrical_ear_canal_constants():
@@ -24,8 +24,8 @@ def get_cylindrical_ear_canal_constants():
 
 def get_acoustic_reflectometry_response(frequencies: list, reflection_coeffs: list):
     """trying to mimic what a microphone would measure x away from TM"""
-    #x = -28.6 * 10**-3    # this is negative because of how the axes are defined
-    x = -21*10**-3
+    x = -28.6 * 10**-3    # this is negative because of how the axes are defined
+    #x = -21*10**-3
     c = 343
 
     p_list = []
@@ -121,8 +121,7 @@ plot_multiple_with_labels(
 impedances_plotting_dict = {
     "fully effused": [frequencies, abs(np.array(impedances))],
     "healthy": [frequencies_h, abs(np.array(impedances_h))],
-    # "healthy (extracted)": [FIG5_HEALTHY_X,FIG5_HEALTHY_Y],
-    # "full (extracted)": [FIG5_FULL_X,FIG5_FULL_Y]
+
 }
 plot_multiple_with_labels(
     "Middle Ear Impedance vs Frequency",

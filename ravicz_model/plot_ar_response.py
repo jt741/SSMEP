@@ -6,6 +6,7 @@ from acoustic_reflectometry_utils.acoustic_reflectometry_response import end_to_
 from ravicz_model.RaviczMiddleEar import RaviczMiddleEar
 
 
+#from merchant_model.AR_cylindrical_EC import ar_resp_dict as merchant_ar_dict
 
 normal_middle_ear = RaviczMiddleEar()
 f_healthy, ar_p_list_healthy = end_to_end_get_ar_response(normal_middle_ear)
@@ -32,6 +33,8 @@ ar_resp_dict = {
         WAVELY_FULL_X,
         WAVELY_FULL_Y,
     ],
+    #"healthy Merchant" : merchant_ar_dict["healthy"],
+    #"effused Merchant" : merchant_ar_dict["fully effused"]
     
 }
 plot_multiple_with_labels(
