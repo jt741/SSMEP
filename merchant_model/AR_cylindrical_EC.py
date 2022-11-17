@@ -1,9 +1,9 @@
 import numpy as np
-from plotting_helper import plot_multiple_with_labels
+from plotting_utils.plotting_helper import plot_multiple_with_labels
 
-from circuit_and_resonant_branches import CircuitHelpers
-from middle_ear_maker import FULL_PARAMS, MiddleEar, HEALTHY_PARAMS
-from extracted_data import FIG5_HEALTHY_X, FIG5_HEALTHY_Y, FIG5_FULL_X, FIG5_FULL_Y, WAVELY_FULL_X, WAVELY_FULL_Y, WAVELY_HEALTHY_X, WAVELY_HEALTHY_Y
+from .circuit_and_resonant_branches import CircuitHelpers
+from .MerchantMiddleEar import FULL_PARAMS, MiddleEar, HEALTHY_PARAMS
+from plotting_utils.extracted_data import MERCHANT_FIG5_HEALTHY_X, MERCHANT_FIG5_HEALTHY_Y, MERCHANT_FIG5_FULL_X, MERCHANT_FIG5_FULL_Y, WAVELY_FULL_X, WAVELY_FULL_Y, WAVELY_HEALTHY_X, WAVELY_HEALTHY_Y
 
 
 def get_cylindrical_ear_canal_constants():

@@ -1,4 +1,7 @@
 {
     "python.formatting.provider": "black",
-    "python.linting.enabled": false
+    "python.linting.enabled": false,
+    "python.analysis.extraPaths": [
+        "./plotting_utils"
+    ]
 }

@@ -2,10 +2,11 @@ from typing import Final
 import matplotlib.pyplot as plt
 import numpy as np
 import cmath
-from circuit_and_resonant_branches import CircuitHelpers
 
 
-# lol ml hell
+from merchant_model.circuit_and_resonant_branches import CircuitHelpers
+
+
 
 # if you need to make same plots over and over again with different data:
 # https://matplotlib.org/3.5.0/tutorials/introductory/usage.html#the-object-oriented-interface-and-the-pyplot-interface
@@ -20,7 +21,7 @@ COLOUR_DICT: Final = {
 
 
 # building blocks for more complicated plots / for quick data visualisation
-def simple_plot(title, x_data, x_label, y_data, y_label, log_code: str|None = None):
+def simple_plot(title, x_data, x_label, y_data, y_label, log_code = None):
     fig, ax = plt.subplots()
     ax.plot(x_data, y_data)
     ax.set(title=title, xlabel=x_label, ylabel=y_label)
@@ -46,7 +47,7 @@ def optional_log_scale_helper(ax, log_code:str):
     return ax
 
 
-def plot_multiple_with_labels(title, x_label, y_label, lines_labels_dict:dict[str,list], log_code: str|None = None):
+def plot_multiple_with_labels(title, x_label, y_label, lines_labels_dict:dict[str,list], log_code=None):
     fig, ax = plt.subplots()
     for legend_label,line in lines_labels_dict.items():
         ax.plot(line[0], line[1], label=legend_label, color=COLOUR_DICT.get(legend_label.lower()))
@@ -63,14 +64,7 @@ def plot_multiple_with_labels(title, x_label, y_label, lines_labels_dict:dict[st
 
 
 
-# more WAI specific plotting functions
-def compare_healthy_and_full_ears_freq_resp(healthy, full):
-    # THIS IS UNNCESSARY FOR NOW - focus on AR !!
-    healthy_tuple = generate_me_impedance_freq_resp(healthy)
-    full_tuple = generate_me_impedance_freq_resp(full)
 
-    fig, axes = plt.subplots(2, 2)
-    #enumerate then do the ret of it
 
 
 def compare_ear_impedances(ear_dict:dict[str,list]):

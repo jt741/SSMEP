@@ -1,10 +1,10 @@
-from plotting_helper import (
+from plotting_utils.plotting_helper import (
     generate_and_plot_me_impedance_freq_resp,
     compare_ear_impedances,
     plot_multiple_with_labels
 )
 
-from middle_ear_maker import HEALTHY_PARAMS, FULL_PARAMS, MiddleEar
+from merchant_model.MerchantMiddleEar import HEALTHY_PARAMS, FULL_PARAMS, MiddleEar
 
 
 # healthy ear

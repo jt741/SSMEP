@@ -1,9 +1,9 @@
 import numpy as np
 
-from plotting_helper import plot_multiple_with_labels
-from extracted_data import FIG3_HEALTHY_X, FIG3_HEALTHY_Y
-from middle_ear_maker import FULL_PARAMS, MiddleEar, HEALTHY_PARAMS
-from AR_cylindrical_EC import get_WAI_freq_resp
+from plotting_utils.plotting_helper import plot_multiple_with_labels
+from plotting_utils.extracted_data import MERCHANT_FIG3_HEALTHY_X, MERCHANT_FIG3_HEALTHY_Y
+from .MerchantMiddleEar import FULL_PARAMS, MiddleEar, HEALTHY_PARAMS
+from .AR_cylindrical_EC import get_WAI_freq_resp
 
 # the reason i am doing this is to see if i can capture other resonances and impedance 
 # but how will i use the transmission matrices? :0 
@@ -158,7 +158,7 @@ ec_impedances_healthy_textbook = transform_impedances(impedances_h, healthy_ear_
 impedances_plotting_dict = {
     "healthy me": [frequencies_h, abs(np.array(impedances_h))],
     "healthy ec": [frequencies_h, abs(np.array(ec_impedances_healthy_textbook))],
-    "healthy ec (extracted)" : [FIG3_HEALTHY_X, FIG3_HEALTHY_Y]
+    "healthy ec (extracted)" : [MERCHANT_FIG3_HEALTHY_X, MERCHANT_FIG3_HEALTHY_Y]
 }
 plot_multiple_with_labels(
     "Impedances vs Frequency",

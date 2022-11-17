@@ -1,6 +1,6 @@
 from typing import Final, Sequence
 
-from circuit_and_resonant_branches import ResonantBranch
+from merchant_model.circuit_and_resonant_branches import ResonantBranch
 
 
 
@@ -19,6 +19,9 @@ FULL_PARAMS: Final = (
 class MiddleEar:
     """
     class to make middle ear given circuit parameters of Merchant's model of the middle ear (2021)
+
+    
+    need to be completely redone to work with the better way set out by Ravicz model!!!!!
     
     """
     def __init__(self, circuit_params: Sequence[dict]):
