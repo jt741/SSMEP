@@ -30,7 +30,6 @@ f_eff_25, ar_p_list_eff_25 = end_to_end_get_ar_response(effused_middle_ear_25)
 
 normal_middle_ear = RaviczMiddleEar()
 f_healthy, ar_p_list_healthy = end_to_end_get_ar_response(normal_middle_ear)
-
 ar_resp_dict = {
 
     "healthy Ravicz": [
