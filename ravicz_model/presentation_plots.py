@@ -2,7 +2,7 @@ from acoustic_reflectometry_utils.acoustic_reflectometry_response import end_to_
 from ravicz_model.RaviczMiddleEar import RaviczMiddleEar
 import matplotlib.pyplot as plt
 from plotting_utils.extracted_data import WAVELY_HEALTHY_X, WAVELY_HEALTHY_Y, WAVELY_FULL_X, WAVELY_FULL_Y
-
+from plotting_utils.plotting_helper import set_size
 labels = []
 
 middle_ear_effusion_state = {
@@ -41,57 +41,141 @@ effused_alpha_dict = line_severity_colour_generator(middle_ear_effusion_state)
 # plt.rc('text', usetex=True)
 #plt.rc('font', family='serif')
 
-SMALL_SIZE = 8
-MEDIUM_SIZE = 10
-BIGGISH_SIZE=12
-BIGGER_SIZE = 16
-plt.rc('font', size=BIGGER_SIZE)          # controls default text sizes
-plt.rc('axes', titlesize=BIGGER_SIZE)     # fontsize of the axes title
-plt.rc('axes', labelsize=BIGGER_SIZE)    # fontsize of the x and y labels
-plt.rc('xtick', labelsize=MEDIUM_SIZE)    # fontsize of the tick labels
-plt.rc('ytick', labelsize=MEDIUM_SIZE)    # fontsize of the tick labels
-plt.rc('legend', fontsize=BIGGISH_SIZE)    # legend fontsize
-plt.rc('figure', titlesize=BIGGER_SIZE)  # fontsize of the figure title
+# SMALL_SIZE = 8
+# MEDIUM_SIZE = 10
+# BIGGISH_SIZE=12
+# BIGGER_SIZE = 16
+# plt.rc('font', size=BIGGISH_SIZE)          # controls default text sizes
+# plt.rc('axes', titlesize=BIGGISH_SIZE)     # fontsize of the axes title
+# plt.rc('axes', labelsize=BIGGISH_SIZE)    # fontsize of the x and y labels
+# plt.rc('xtick', labelsize=MEDIUM_SIZE)    # fontsize of the tick labels
+# plt.rc('ytick', labelsize=MEDIUM_SIZE)    # fontsize of the tick labels
+# plt.rc('legend', fontsize=BIGGISH_SIZE)    # legend fontsize
+# plt.rc('figure', titlesize=BIGGER_SIZE)  # fontsize of the figure title
 
-def plot_ravicz_trends(effused_dict, alphas, normal):
-    fig, ax = plt.subplots(figsize=(9,5))
+def plot_ravicz_trends(effused_dict, alphas, normal, latex=True):
+    if latex:
+        #Direct input 
+        plt.rcParams['text.latex.preamble']=[r"\usepackage{lmodern}"]
+        #Options
+        params = {'text.usetex' : True,
+                'font.size' : 12,
+                'font.family' : 'lmodern',
+                }
+        plt.rcParams.update(params) 
     
-    ax.plot(normal[0], normal[1], color="tab:blue", label=f"0% effused (healthy)")
+    
+    fig_dim = set_size(455.2,0.7)
+    fig, ax = plt.subplots(figsize=(fig_dim[0]/0.7, fig_dim[1]))
+    plt.subplots_adjust(top=0.95, right=0.96, left=0.12, bottom=0.18)
+    # plt.subplots_adjust(top=0.95, right=0.72, left=0.12, bottom=0.18)
+    
+    if latex:
+        ax.plot(normal[0], normal[1],':', color="tab:blue", label=f"0\% effused (healthy)")
+    else:
+        ax.plot(normal[0], normal[1],':', color="tab:blue", label=f"0% effused (healthy)")
 
+    # for leg_lab, line in effused_dict.items():
+    #     ax.plot(line[0], line[1], color="tab:red", alpha=alphas.get(leg_lab), label=f"{leg_lab}% effused")
+
+    #using line styles for black and white display
+    linesstyles = ['-.', '--', '-']
+    i = 0
     for leg_lab, line in effused_dict.items():
-        ax.plot(line[0], line[1], color="tab:red", alpha=alphas.get(leg_lab), label=f"{leg_lab}% effused")
+        s=linesstyles[i]
+        if latex:
+            ax.plot(line[0], line[1],s, color="tab:red",alpha=alphas.get(leg_lab), label=f"{leg_lab}\% effused")
+        else:
+            ax.plot(line[0], line[1], s, color="tab:red", alpha=alphas.get(leg_lab), label=f"{leg_lab}% effused")
+        i+=1
+        
 
     ax.set(
-        title="Acoustic Reflectometry response using Ravicz LEM", 
+        #title="Modelled acoustic reflectometry response with changing effusion level", 
         xlabel="Frequency (Hz)", 
-        ylabel=r"$\frac{ \mathrm{Measured \ Pressure \ Amplitude}}{\mathrm{Forward\ Pressure\ Wave\ Amplitude}}$",
+        ylabel="Normalised Pressure Amplitude",
         )
     
-    #hfont = {'fontfamily':'serif'}
-    #plt.ylabel(r"$\frac{ \mathrm{Measured \ Pressure \ Amplitude}}{\mathrm{Forward\ Pressure\ Wave\ Amplitude}}$", **hfont)
+    ax.set_xlim([1600, 4500])
+    ax.set_ylim([-0.1, 1.1])
     
-    plt.legend()
-    plt.savefig("ravicz_model/plots/highres.svg")
+    box = ax.get_position()
+    ax.set_position([box.x0, box.y0, box.width * 0.6, box.height])
+
+    # Put a legend to the right of the current axis
+    ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+
+    # plt.legend(loc="lower right")
+    # ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+    # ax.legend(loc='upper left', bbox_to_anchor=(1.04, 1))
+    if latex:
+        plt.savefig("ravicz_model/plots/different_effusions_latex.pdf")
     plt.show()
 
-#plot_ravicz_trends(middle_ear_effusion_state, effused_alpha_dict, end_to_end_get_ar_response(RaviczMiddleEar()))
+plot_ravicz_trends(middle_ear_effusion_state, effused_alpha_dict, end_to_end_get_ar_response(RaviczMiddleEar()), latex=True)
 
-def compare_ravicz_with_real(ravicz_dict, measured_data):
-    fig, ax = plt.subplots(figsize=(9,5))
-    ax.plot(ravicz_dict["0"][0], ravicz_dict["0"][1], color="tab:blue", label=f"modelled 0% effused (healthy)")
-    ax.plot(ravicz_dict["100"][0], ravicz_dict["100"][1], color="tab:red", label=f"modelled 100% effused")
-    ax.plot(measured_data["0"][0], measured_data["0"][1], color="tab:blue", label=f"measured healthy ear", linestyle="dashdot")
-    ax.plot(measured_data["100"][0], measured_data["100"][1], color="tab:red", label=f"measured effused ear", linestyle="dashdot")
+def compare_ravicz_with_real(ravicz_dict, measured_data, latex=False):
+    
+    if latex:
+        #Direct input 
+        plt.rcParams['text.latex.preamble']=[r"\usepackage{lmodern}"]
+        #Options
+        params = {'text.usetex' : True,
+                'font.size' : 12,
+                'font.family' : 'lmodern',
+                }
+        plt.rcParams.update(params) 
+    
+    
+    fig_dim = set_size(455.2,0.7)
+    # fig, ax = plt.subplots(figsize=fig_dim)
+    # plt.subplots_adjust(top=0.95, right=0.95, bottom=0.15)
+    # plt.subplots_adjust(top=0.95, right=0.95, left=0.15, bottom=0.18)
+    fig, ax = plt.subplots(figsize=(fig_dim[0]/0.7, fig_dim[1]))
+    plt.subplots_adjust(top=0.95, right=0.96, left=0.12, bottom=0.18)
+
+    # plt.subplots_adjust(top=0.95, right=0.62, left=0.12, bottom=0.18)
+
+
+    # ax.plot(ravicz_dict["0"][0], ravicz_dict["0"][1], color="tab:blue", label=f"modelled 0% effused (healthy)")
+    # ax.plot(ravicz_dict["100"][0], ravicz_dict["100"][1], color="tab:red", label=f"modelled 100% effused")
+    # ax.plot(measured_data["0"][0], measured_data["0"][1], color="tab:blue", label=f"measured healthy ear", linestyle="dashdot")
+    # ax.plot(measured_data["100"][0], measured_data["100"][1], color="tab:red", label=f"measured effused ear", linestyle="dashdot")
+
+    # std line styles for black and white printing
+    if latex:
+        ax.plot(ravicz_dict["0"][0], ravicz_dict["0"][1], '-',color="tab:blue", label=f"modelled 0\% effused")
+        ax.plot(ravicz_dict["100"][0], ravicz_dict["100"][1],'--', color="tab:red", label=f"modelled 100\% effused")
+        ax.plot(measured_data["0"][0], measured_data["0"][1], '-.',color="tab:blue", label=f"measured healthy ear")
+        ax.plot(measured_data["100"][0], measured_data["100"][1],':', color="tab:red", label=f"measured effused ear")
+    else:
+        ax.plot(ravicz_dict["0"][0], ravicz_dict["0"][1], '-',color="tab:blue", label=f"modelled 0% effused (healthy)")
+        ax.plot(ravicz_dict["100"][0], ravicz_dict["100"][1],'--', color="tab:red", label=f"modelled 100% effused")
+        ax.plot(measured_data["0"][0], measured_data["0"][1], '-.',color="tab:blue", label=f"measured healthy ear")
+        ax.plot(measured_data["100"][0], measured_data["100"][1],':', color="tab:red", label=f"measured effused ear")
+
     ax.set(
-        title="Comparing modelled and measured Acoustic Reflectometry", 
+        #title="Comparing modelled and measured Acoustic Reflectometry", 
         xlabel="Frequency (Hz)", 
-        ylabel=r"$\frac{ \mathrm{Measured \ Pressure \ Amplitude}}{\mathrm{Forward\ Pressure\ Wave\ Amplitude}}$",
+        #ylabel=r"$\dfrac{ \mathrm{Measured \ pressure \ field \ amplitude}}{\mathrm{Incident\ pressure\ wave\ amplitude}}$",
+        #ylabel=r'$\dfrac{\mathrm{Measured pressure field amplitude}}{\mathrm{Incident pressure wave amplitude}}$'
+        ylabel="Normalised Pressure Amplitude"
         )
     ax.set_xlim([1600, 4500])
     ax.set_ylim([-0.1, 1.1])
 
-    plt.legend()
-    plt.savefig("ravicz_model/plots/comparison_xlim.svg")
+    box = ax.get_position()
+    ax.set_position([box.x0, box.y0, box.width * 0.6, box.height])
+
+    # Put a legend to the right of the current axis
+    ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+
+
+    # plt.legend(loc="best")
+    # ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+    #plt.savefig("ravicz_model/plots/comparison_xlim.svg")
+    if latex:
+        plt.savefig("ravicz_model/plots/comparison_latex.pdf")
     plt.show()
 
 ravicz_dictionary = {
@@ -104,4 +188,4 @@ wavely_dictionary = {
     "100": (WAVELY_FULL_X, WAVELY_FULL_Y),
 }
 
-compare_ravicz_with_real(ravicz_dictionary,wavely_dictionary)
+compare_ravicz_with_real(ravicz_dictionary,wavely_dictionary, latex=True)

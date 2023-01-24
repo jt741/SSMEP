@@ -17,7 +17,25 @@ COLOUR_DICT: Final = {
     "healthy": "tab:green"
 }
 
+def set_size(width, fraction=1):
+    """
+    helper function to avoid scaling in LaTeX
+    width = \the\textwidth
+    fraction = scaling you would have done in LateX
+    """
 
+    fig_width_pt = width * fraction
+
+    inches_per_pt = 1/72.27
+
+    golden_ratio = (5**0.5 -1)/2
+
+    #figure width in inches
+    fig_width_inch = fig_width_pt * inches_per_pt
+    fig_height_inch = fig_width_inch * golden_ratio
+
+    fig_dim = (fig_width_inch, fig_height_inch)
+    return fig_dim
 
 
 # building blocks for more complicated plots / for quick data visualisation

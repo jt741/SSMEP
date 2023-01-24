@@ -25,7 +25,7 @@ def get_reflection_coeffs(impedances):
     return reflection_coeffs
 
 def get_acoustic_reflectometry_response(frequencies, reflection_coeffs):
-    x = -28*10**-3
+    x = -28*10**-3 #28? 25? :0
     c = 343
 
     p_list = []
@@ -39,7 +39,7 @@ def get_acoustic_reflectometry_response(frequencies, reflection_coeffs):
 
 
 
-def end_to_end_get_ar_response(model, start_f=100, stop_f=8000):
+def end_to_end_get_ar_response(model, start_f=1500, stop_f=5000):
     f_list, Z_me_list = get_impedance_frequency_response(model, start_f, stop_f)
     refl_coeff_list = get_reflection_coeffs(Z_me_list)
     ar_p_list = get_acoustic_reflectometry_response(f_list, refl_coeff_list)

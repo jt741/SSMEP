@@ -5,6 +5,9 @@ from plotting_utils.extracted_data import WAVELY_HEALTHY_X, WAVELY_HEALTHY_Y, WA
 
 labels = []
 
+#? so what is this? have i just assumed an empty ear (full ME volume) and changed mtoc and rtoc as if i was varying the mass of the TM? 
+# i think the logic was, if i increase contact of TM, I increase the mass on the TM 
+
 middle_ear_effusion_state = {
     #"0" : end_to_end_get_ar_response(RaviczMiddleEar()),
     #"1mg" : end_to_end_get_ar_response(RaviczMiddleEar(M_TOC=0.4*10**3, R_TOC=103*10**6)),
@@ -13,7 +16,7 @@ middle_ear_effusion_state = {
     #"45mg" : end_to_end_get_ar_response(RaviczMiddleEar(M_TOC=12*10**3, R_TOC=95*10**6)),
     "90mg" : end_to_end_get_ar_response(RaviczMiddleEar(M_TOC=25*10**3, R_TOC=95*10**6)), #this is 50%
     #"120mg" : end_to_end_get_ar_response(RaviczMiddleEar(C_MEC=5.0*10**-12, M_TOC=32*10**3, R_TOC=130*10**6)),
-    #"170mg" : end_to_end_get_ar_response(RaviczMiddleEar(M_TOC=47.5*10**3, R_TOC=160*10**6)),
+    "170mg" : end_to_end_get_ar_response(RaviczMiddleEar(M_TOC=47.5*10**3, R_TOC=160*10**6)),
     #"340mg" : end_to_end_get_ar_response(RaviczMiddleEar(M_TOC=95*10**3, R_TOC=160*10**6)),
     #"680mg" : end_to_end_get_ar_response(RaviczMiddleEar(M_TOC=190*10**3, R_TOC=160*10**6)),
     #"2200mg extra" : end_to_end_get_ar_response(RaviczMiddleEar(M_TOC=610*10**3, R_TOC=310*10**6)), #this has hardly anychange

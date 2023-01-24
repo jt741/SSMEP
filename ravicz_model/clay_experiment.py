@@ -81,8 +81,8 @@ plot_ravicz_trends(middle_ear_effusion_state_by_V_MEC, effused_alpha_dict, end_t
 #comparing with real
 def compare_ravicz_with_real(ravicz_dict, measured_data):
     fig, ax = plt.subplots(figsize=(9,5))
-    ax.plot(ravicz_dict["0"][0], ravicz_dict["0"][1], color="tab:blue", label=f"modelled 0% effused (healthy)")
-    ax.plot(ravicz_dict["100"][0], ravicz_dict["100"][1], color="tab:red", label=f"modelled 100% effused")
+    ax.plot(ravicz_dict["0"][0], ravicz_dict["0"][1], color="tab:blue", label=f"modelled healthy")
+    ax.plot(ravicz_dict["100"][0], ravicz_dict["100"][1], color="tab:red", label=f"modelled 5% V_MEC remaining")
     ax.plot(measured_data["0"][0], measured_data["0"][1], color="tab:blue", label=f"measured healthy ear", linestyle="dashdot")
     ax.plot(measured_data["100"][0], measured_data["100"][1], color="tab:red", label=f"measured effused ear", linestyle="dashdot")
     ax.set(
