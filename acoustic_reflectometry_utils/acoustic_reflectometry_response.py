@@ -2,8 +2,8 @@ import numpy as np
 
 # just need model to have a method of get_impedance which takes frequency as param
 
-def get_impedance_frequency_response(model, start_f, stop_f):
-    frequencies = np.linspace(start=start_f, stop=stop_f, num=1000)
+def get_impedance_frequency_response(model, start_f, stop_f, num):
+    frequencies = np.linspace(start=start_f, stop=stop_f, num=num)
 
     impedances = []
     for f in frequencies:
@@ -39,8 +39,8 @@ def get_acoustic_reflectometry_response(frequencies, reflection_coeffs):
 
 
 
-def end_to_end_get_ar_response(model, start_f=1500, stop_f=5000):
-    f_list, Z_me_list = get_impedance_frequency_response(model, start_f, stop_f)
+def end_to_end_get_ar_response(model, start_f=1500, stop_f=5000, num=1000):
+    f_list, Z_me_list = get_impedance_frequency_response(model, start_f, stop_f, num)
     refl_coeff_list = get_reflection_coeffs(Z_me_list)
     ar_p_list = get_acoustic_reflectometry_response(f_list, refl_coeff_list)
 

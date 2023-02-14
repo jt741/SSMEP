@@ -12,3 +12,6 @@ class RaviczMiddleEar:
     def get_impedance(self, w):
         middle_ear_impedance = total_impedance_series(self.C_TOC.get_impedance(w), self.R_TOC.get_impedance(w), self.M_TOC.get_impedance(w), self.C_MEC.get_impedance(w))
         return middle_ear_impedance
+
+    def set_r_toc(self, r_toc):
+        self.R_TOC = Resistor(r_toc)
