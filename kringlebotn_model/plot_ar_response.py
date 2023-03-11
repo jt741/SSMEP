@@ -5,11 +5,11 @@ from ravicz_model.RaviczMiddleEar import RaviczMiddleEar
 
 
 model = KringlebotnMiddleEar()
-f, p = end_to_end_get_ar_response(model, stop_f=9000)
+f, p = end_to_end_get_ar_response(model)
 
 
 ravicz_model = RaviczMiddleEar()
-f_healthy, ar_p_list_healthy = end_to_end_get_ar_response(ravicz_model, stop_f=9000)
+f_healthy, ar_p_list_healthy = end_to_end_get_ar_response(ravicz_model)
 
 
 plot_multiple_with_labels(
@@ -19,6 +19,3 @@ plot_multiple_with_labels(
     {"Kringlebotn model": [f,p],
      "ravicz model":[f_healthy, ar_p_list_healthy] },
 )
-
-# print(abs(ravicz_model.get_impedance(1000)))
-print(abs(model.get_impedance(1000)))

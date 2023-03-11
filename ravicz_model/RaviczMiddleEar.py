@@ -15,3 +15,6 @@ class RaviczMiddleEar:
 
     def set_r_toc(self, r_toc):
         self.R_TOC = Resistor(r_toc)
+    
+    def set_m_toc(self, m_toc):
+        self.M_TOC = Inductor(m_toc)

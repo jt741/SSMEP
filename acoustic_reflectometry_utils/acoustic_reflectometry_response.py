@@ -25,7 +25,7 @@ def get_reflection_coeffs(impedances):
     return reflection_coeffs
 
 def get_acoustic_reflectometry_response(frequencies, reflection_coeffs):
-    x = -28*10**-3 #28? 25? :0
+    x = -28*10**-3 #25
     c = 343
 
     p_list = []
@@ -35,6 +35,10 @@ def get_acoustic_reflectometry_response(frequencies, reflection_coeffs):
         p = forward + backward
         p_list.append(abs(p)) # plot absolute instead of real value 
 
+        #below would also be equivalent
+        # norm_p = 1+reflection_coeffs[i]*np.exp(2*1j*2*np.pi*f*x/c)
+        # p_list.append(abs(norm_p))
+        
     return p_list
 
 
