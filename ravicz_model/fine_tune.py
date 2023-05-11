@@ -1,4 +1,5 @@
 from acoustic_reflectometry_utils.acoustic_reflectometry_response import end_to_end_get_ar_response
+from plotting_utils.plotting_helper import plot_multiple_with_labels
 from ravicz_model.RaviczMiddleEar import RaviczMiddleEar
 import matplotlib.pyplot as plt
 import numpy as np
@@ -26,7 +27,7 @@ middle_ear_effusion_state_above_50 = {
     "100% TM covered" : end_to_end_get_ar_response(RaviczMiddleEar(C_MEC=3.1*10**-12, M_TOC=190*10**3, R_TOC=160*10**6), start_f=2500, stop_f=3500, num=5000)
 }
 
-# plot_multiple_with_labels("modelled AR response", "frequency (Hz)", "reflectivity unit", middle_ear_effusion_state)
+plot_multiple_with_labels("Simulated Acoustic Reflectivity Response", "Frequency (Hz)", "Reflectivity Unit", middle_ear_effusion_state_spread)
 
 def spectral_gradient(x_values, y_values):
     p=np.polyfit(x_values, y_values, deg=7)
@@ -205,7 +206,7 @@ middle_ear_effusion_state_TM_and_effusion = {
     "100% TM | 90% effused" : end_to_end_get_ar_response(RaviczMiddleEar(C_MEC=0.77*10**-12, M_TOC=610*10**3, R_TOC=310*10**6), start_f=2500, stop_f=3500, num=5000)
 }
 
-# plot_sg_ar(middle_ear_effusion_state_TM_and_effusion)
+plot_sg_ar(middle_ear_effusion_state_TM_and_effusion)
 
 
 
