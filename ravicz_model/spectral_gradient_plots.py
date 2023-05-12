@@ -217,7 +217,7 @@ def spectral_angle_mass_all_ears(ears, scale_factor=2000, plot_ravicz=False, ann
     plt.legend()
     plt.show()
 
-spectral_angle_mass_all_ears(ravicz_data_dict, scale_factor=2000, plot_ravicz=True)
+# spectral_angle_mass_all_ears(ravicz_data_dict, scale_factor=2000, plot_ravicz=True)
 
 
 

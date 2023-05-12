@@ -16,7 +16,7 @@ def get_cylindrical_ear_canal_inductance():
     return L
 
 def get_z_ec(L, frequencies):
-    impedances_of_ear_canal = 1j*L*frequencies
+    impedances_of_ear_canal = 1j*L*2*np.pi*frequencies #oh no was the old data with just f :(
     return impedances_of_ear_canal
 
 def get_total_impedance(z_ec, z_me):
@@ -58,7 +58,7 @@ def go_through_effusions(list_of_ears):
 
 def write_to_csv(f, p_norm, z_total, filename="healthy"):
     data=zip(f,p_norm, z_total)
-    csv_file = f"ravicz_model/{filename}_effusion_impedance_and_acoustic_reflectometry_data.csv"
+    csv_file = f"ravicz_model/new_data_for_max/{filename}_effusion_impedance_and_acoustic_reflectometry_data.csv"
 
     with open(csv_file, 'w', newline='') as csvfile:
         writer = csv.writer(csvfile)

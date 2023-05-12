@@ -27,7 +27,7 @@ middle_ear_effusion_state_above_50 = {
     "100% TM covered" : end_to_end_get_ar_response(RaviczMiddleEar(C_MEC=3.1*10**-12, M_TOC=190*10**3, R_TOC=160*10**6), start_f=2500, stop_f=3500, num=5000)
 }
 
-plot_multiple_with_labels("Simulated Acoustic Reflectivity Response", "Frequency (Hz)", "Reflectivity Unit", middle_ear_effusion_state_spread)
+# plot_multiple_with_labels("Simulated Acoustic Reflectivity Response", "Frequency (Hz)", "Reflectivity Unit", middle_ear_effusion_state_spread)
 
 def spectral_gradient(x_values, y_values):
     p=np.polyfit(x_values, y_values, deg=7)
@@ -127,7 +127,7 @@ def polyfit_a_bit_away_from_min(x,y):
 
 
 
-def polyfit_with_linear(ax, x,y, legend_label, colour):
+def polyfit_with_linear(ax, x,y, legend_label, colour, linestyle='-'):
     min_index=find_min(x,y)
     max_len=len(x)
 
@@ -153,7 +153,7 @@ def polyfit_with_linear(ax, x,y, legend_label, colour):
     angle=180 - right_angle + left_angle
     # print(f"angle is {angle}")
 
-    ax.plot(x,y, label=legend_label+f" | 'angle': {round(angle,2)}", color=colour)
+    ax.plot(x,y, label=rf"{legend_label} \% effused $\vert$ spectral angle: {round(angle)}$^\circ$", color=colour, linestyle=linestyle)
     ax.plot(x[:min_index],f_left(x[:min_index]),color=colour, linestyle='--', alpha=0.4)
     ax.plot(x[min_index:],f_right(x[min_index:]),color=colour,linestyle='--', alpha=0.4)
 
@@ -206,7 +206,7 @@ middle_ear_effusion_state_TM_and_effusion = {
     "100% TM | 90% effused" : end_to_end_get_ar_response(RaviczMiddleEar(C_MEC=0.77*10**-12, M_TOC=610*10**3, R_TOC=310*10**6), start_f=2500, stop_f=3500, num=5000)
 }
 
-plot_sg_ar(middle_ear_effusion_state_TM_and_effusion)
+# plot_sg_ar(middle_ear_effusion_state_TM_and_effusion)
 
 
 
