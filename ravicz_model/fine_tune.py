@@ -127,7 +127,7 @@ def polyfit_a_bit_away_from_min(x,y):
 
 
 
-def polyfit_with_linear(ax, x,y, legend_label, colour, linestyle='-'):
+def polyfit_with_linear(ax, x,y, legend_label, colour, linestyle='-', scale_factor=2000):
     min_index=find_min(x,y)
     max_len=len(x)
 
@@ -140,14 +140,14 @@ def polyfit_with_linear(ax, x,y, legend_label, colour, linestyle='-'):
     p_left=np.polyfit(x[:left], y[:left], deg=1)
     # print(f"left equation is: y={p_left[0]}x+{p_left[1]}")
     f_left=np.poly1d(p_left)
-    left_angle = math.degrees(math.atan(p_left[0]*2000)) #scale by 2000
+    left_angle = math.degrees(math.atan(p_left[0]*scale_factor)) #scale by scalefactor default 2000
     # print(f"left angle is {left_angle}")
 
     
     p_right=np.polyfit(x[right:], y[right:], deg=1)
     # print(f"right equation is: y={p_right[0]}x+{p_right[1]}")
     f_right=np.poly1d(p_right)
-    right_angle = math.degrees(math.atan(p_right[0]*2000))
+    right_angle = math.degrees(math.atan(p_right[0]*scale_factor))
     # print(f"right angle is {right_angle}")
 
     angle=180 - right_angle + left_angle

@@ -25,7 +25,7 @@ def get_reflection_coeffs(impedances):
     return reflection_coeffs
 
 def get_acoustic_reflectometry_response(frequencies, reflection_coeffs):
-    x = -28*10**-3 #25
+    x = -28.3*10**-3 #28
     c = 343
 
     p_list = []
@@ -47,5 +47,31 @@ def end_to_end_get_ar_response(model, start_f=1500, stop_f=5000, num=1000):
     f_list, Z_me_list = get_impedance_frequency_response(model, start_f, stop_f, num)
     refl_coeff_list = get_reflection_coeffs(Z_me_list)
     ar_p_list = get_acoustic_reflectometry_response(f_list, refl_coeff_list)
+
+    return f_list, ar_p_list
+
+
+def get_acoustic_reflectometry_response_norm_velocity(frequencies, reflection_coeffs):
+    x = -28*10**-3 #25
+    c = 343
+
+    p_norm_list = []
+    for i, f in enumerate(frequencies):
+        p_over_I = 1+ reflection_coeffs[i]*np.exp(2* 1j * 2 * np.pi * f * (x / c))
+        u_over_I = 1- reflection_coeffs[i]*np.exp(2* 1j * 2 * np.pi * f * (x / c))
+
+        p_over_u = p_over_I / u_over_I
+
+        p_norm_list.append(abs(p_over_u)) # plot absolute instead of real value 
+
+    return p_norm_list
+
+
+
+def end_to_end_get_ar_response_norm_velocity(model, start_f=1500, stop_f=5000, num=1000):
+    #normalise with velocity of source...
+    f_list, Z_me_list = get_impedance_frequency_response(model, start_f, stop_f, num)
+    refl_coeff_list = get_reflection_coeffs(Z_me_list)
+    ar_p_list = get_acoustic_reflectometry_response_norm_velocity(f_list, refl_coeff_list)
 
     return f_list, ar_p_list

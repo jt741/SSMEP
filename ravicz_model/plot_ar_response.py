@@ -2,7 +2,7 @@ from plotting_utils.extracted_data import WAVELY_HEALTHY_X, WAVELY_HEALTHY_Y, WA
 
 from plotting_utils.plotting_helper import plot_multiple_with_labels
 
-from acoustic_reflectometry_utils.acoustic_reflectometry_response import end_to_end_get_ar_response
+from acoustic_reflectometry_utils.acoustic_reflectometry_response import end_to_end_get_ar_response, end_to_end_get_ar_response_norm_velocity
 from ravicz_model.RaviczMiddleEar import RaviczMiddleEar
 
 
@@ -80,3 +80,31 @@ plot_multiple_with_labels(
 )
 
 
+# plotting norm v (this will just be the imepedance at the middle ear right?? compare with using a lumped inductor?)
+f_healthy_u, ar_p_list_healthy_u = end_to_end_get_ar_response_norm_velocity(normal_middle_ear)
+f_eff_100_u, ar_p_list_eff_100_u = end_to_end_get_ar_response_norm_velocity(effused_middle_ear_100)
+
+ar_norm_u_resp_dict = {
+    "healthy Ravicz et al.": [
+        f_healthy_u,
+        ar_p_list_healthy_u,
+    ],
+    "healthy (extracted [Chan et al.])": [
+        WAVELY_HEALTHY_X,
+        WAVELY_HEALTHY_Y,
+    ],
+     "effused 100% Ravicz et al.": [
+        f_eff_100_u,
+        ar_p_list_eff_100_u,
+    ],
+    "fully effused (extracted [Chan et al.])": [
+        WAVELY_FULL_X,
+        WAVELY_FULL_Y,
+    ],
+}
+plot_multiple_with_labels(
+    "Pressure at measurement point vs Frequency",
+    "Frequency (Hz)",
+    "Pressure / Velocity of source (assumed constant) ",
+    ar_norm_u_resp_dict,
+)

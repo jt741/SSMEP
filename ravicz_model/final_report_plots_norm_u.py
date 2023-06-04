@@ -75,7 +75,7 @@ def set_figure_scaling_for_latex(scaling_fraction=0.7, y_dim_extra_scaling=1 ):
     return fig,ax
 
 
-def plot_ravicz_changing_effusion_for_latex(effused_dict):
+def plot_ravicz_changing_effusion_for_latex(effused_dict, reflectivity=True):
     """
     plotting Modelled acoustic reflectometry response with changing effusion level for Latex
     legend and scaling here is a bit weird - i might redo since i have more space in my report? but redo at the end
@@ -99,11 +99,19 @@ def plot_ravicz_changing_effusion_for_latex(effused_dict):
         ax.plot(line[0], line[1],linestyle=s, label=f"{leg_lab}\% effused")
         i+=1
         
-    ax.set(
-        #title="Modelled acoustic reflectometry response with changing effusion level", 
-        xlabel="Frequency (Hz)", 
-        ylabel="Normalised Pressure Amplitude",
-        )
+    
+    if reflectivity:
+        ax.set(
+            #title="Modelled acoustic reflectometry response with changing effusion level", 
+            xlabel="Frequency (Hz)", 
+            ylabel=r"Reflectivity=$|p'|/|I|$",
+            )
+    else:
+        ax.set(
+            #title="Modelled acoustic reflectometry response with changing effusion level", 
+            xlabel="Frequency (Hz)", 
+            ylabel=r"$Z^s_{\mathrm{EC}} = p'/u' \thinspace (\mathrm{kg} \mathrm{m}^{-2} \mathrm{s}^{-1})$",
+            )
     
     ax.set_xlim([1600, 4500])
     ax.set_ylim([-0.1, 1.1])
@@ -118,14 +126,17 @@ def plot_ravicz_changing_effusion_for_latex(effused_dict):
     # ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
     # ax.legend(loc='upper left', bbox_to_anchor=(1.04, 1))
     
-    plt.savefig("ravicz_model/final_report_plots/different_effusions_latex.pdf")
+    if reflectivity:
+        plt.savefig("ravicz_model/final_report_plots_norm_u/different_effusions_latex_reflectivity.pdf")
+    else:
+        plt.savefig("ravicz_model/final_report_plots_norm_u/different_effusions_latex.pdf")
     plt.show()
 
-# plot_ravicz_changing_effusion_for_latex(middle_ear_effusion_state)
-# plot_ravicz_changing_effusion_for_latex(middle_ear_effusion_state_norm_u)
+plot_ravicz_changing_effusion_for_latex(middle_ear_effusion_state)
+plot_ravicz_changing_effusion_for_latex(middle_ear_effusion_state_norm_u, reflectivity=False)
 
 
-def compare_ravicz_with_real_for_latex(ravicz_dict, measured_data):
+def compare_ravicz_with_real_for_latex(ravicz_dict, measured_data, reflectivity=True):
     """
     Comparing modelled and measured Acoustic Reflectometry
     """
@@ -144,13 +155,24 @@ def compare_ravicz_with_real_for_latex(ravicz_dict, measured_data):
     ax.plot(measured_data["0"][0], measured_data["0"][1], linestyle=(0, (3, 5, 1, 5)),color="tab:blue", label=f"Measured healthy ear")
     ax.plot(measured_data["100"][0], measured_data["100"][1],linestyle=(0, (5, 1)), color="tab:red", label=f"Measured effused ear")
    
-    ax.set(
-        #title="Comparing modelled and measured Acoustic Reflectometry", 
-        xlabel="Frequency (Hz)", 
-        #ylabel=r"$\dfrac{ \mathrm{Measured \ pressure \ field \ amplitude}}{\mathrm{Incident\ pressure\ wave\ amplitude}}$",
-        #ylabel=r'$\dfrac{\mathrm{Measured pressure field amplitude}}{\mathrm{Incident pressure wave amplitude}}$'
-        ylabel="Normalised Pressure Amplitude"
-        )
+    if reflectivity:
+        ax.set(
+            #title="Comparing modelled and measured Acoustic Reflectometry", 
+            xlabel="Frequency (Hz)", 
+            #ylabel=r"$\dfrac{ \mathrm{Measured \ pressure \ field \ amplitude}}{\mathrm{Incident\ pressure\ wave\ amplitude}}$",
+            #ylabel=r'$\dfrac{\mathrm{Measured pressure field amplitude}}{\mathrm{Incident pressure wave amplitude}}$'
+            ylabel=r"Reflectivity=$|p'|/|I|$"
+            )
+        
+    else:
+                ax.set(
+            #title="Comparing modelled and measured Acoustic Reflectometry", 
+            xlabel="Frequency (Hz)", 
+            #ylabel=r"$\dfrac{ \mathrm{Measured \ pressure \ field \ amplitude}}{\mathrm{Incident\ pressure\ wave\ amplitude}}$",
+            #ylabel=r'$\dfrac{\mathrm{Measured pressure field amplitude}}{\mathrm{Incident pressure wave amplitude}}$'
+            ylabel=r"$Z^s_{\mathrm{EC}} = p'/u' \thinspace (\mathrm{kg} \mathrm{m}^{-2} \mathrm{s}^{-1})$"
+            )
+
     ax.set_xlim([1600, 4500])
     ax.set_ylim([-0.1, 1.1])
 
@@ -160,7 +182,12 @@ def compare_ravicz_with_real_for_latex(ravicz_dict, measured_data):
     # Put a legend to the right of the current axis
     # ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
     plt.legend(loc="upper center")
-    plt.savefig("ravicz_model/final_report_plots/comparison_latex.pdf")
+
+    if reflectivity:
+        plt.savefig("ravicz_model/final_report_plots_norm_u/comparison_latex_refl.pdf")
+    else:
+        plt.savefig("ravicz_model/final_report_plots_norm_u/comparison_latex.pdf")
+    
     plt.show()
 
 ravicz_dictionary = {
@@ -177,9 +204,116 @@ wavely_dictionary = {
     "100": (WAVELY_FULL_X, WAVELY_FULL_Y),
 }
 
-# compare_ravicz_with_real_for_latex(ravicz_dictionary,wavely_dictionary)
-# compare_ravicz_with_real_for_latex(ravicz_dictionary_norm_u,wavely_dictionary)
+compare_ravicz_with_real_for_latex(ravicz_dictionary,wavely_dictionary)
+compare_ravicz_with_real_for_latex(ravicz_dictionary_norm_u,wavely_dictionary, reflectivity=False)
 
+
+#damnnaaation
+reflectivity_and_norm_u = {
+    "0" : [end_to_end_get_ar_response(normal_middle_ear), end_to_end_get_ar_response_norm_velocity(normal_middle_ear)],
+    "25" : [end_to_end_get_ar_response(effused_middle_ear_25), end_to_end_get_ar_response_norm_velocity(effused_middle_ear_25)],
+    "50" : [end_to_end_get_ar_response(effused_middle_ear_50), end_to_end_get_ar_response_norm_velocity(effused_middle_ear_50)],
+    "100" : [end_to_end_get_ar_response(effused_middle_ear_100), end_to_end_get_ar_response_norm_velocity(effused_middle_ear_100)],
+}
+
+def compare_reflectivity_to_norm_u(reflectivity_and_norm_u_dict):
+    set_latex_font_size()
+
+    textwidth = 455.2
+    scaling_fraction = 0.7
+    fig_dim = set_size(textwidth, scaling_fraction) 
+
+    #need to do a golden ratio for portrait plots!?
+    fig, axes = plt.subplots(2, 1,sharex=True, figsize=(fig_dim[0]/scaling_fraction, fig_dim[0]*1.5))
+    # plt.subplots_adjust(top=0.95, right=0.95, bottom=0.15)
+    # plt.subplots_adjust(top=0.95, right=0.95, left=0.15, bottom=0.18)
+    plt.subplots_adjust(top=0.97, right=0.96, left=0.12, bottom=0.102, hspace=0.2)
+
+    reflectivity = axes[0]
+    norm_u = axes[1]
+
+    linesstyles = [':', '-.', '--', '-']
+    i = 0
+    for leg_lab, lines in reflectivity_and_norm_u_dict.items():
+        s=linesstyles[i]
+        reflectivity.plot(lines[0][0], lines[0][1],linestyle=s, label=f"{leg_lab}\% effused")
+        norm_u.plot(lines[1][0], lines[1][1],linestyle=s, label=f"{leg_lab}\% effused")
+        i+=1
+        
+    reflectivity.set(
+        #title="Modelled acoustic reflectometry response with changing effusion level", 
+        xlabel="Frequency (Hz)", 
+        ylabel=r"Reflectivity=$|p'|/|I|$"
+        )
+    
+    norm_u.set(
+        #title="Modelled acoustic reflectometry response with changing effusion level", 
+        xlabel="Frequency (Hz)", 
+        ylabel=r"$Z^s_{\mathrm{EC}} = p'/u' \thinspace (\mathrm{kg} \mathrm{m}^{-2} \mathrm{s}^{-1})$",
+        )
+    
+    reflectivity.set_xlim([1600, 4500])
+    norm_u.set_xlim([1600, 4500])
+
+    reflectivity.set_ylim([-0.1, 1.1])
+    norm_u.set_ylim([-0.1, 1.1])
+
+    norm_u.legend()
+
+    plt.savefig(f"ravicz_model/final_report_plots_norm_u/reflectivity_v_impedance.pdf")
+    plt.show()
+
+compare_reflectivity_to_norm_u(reflectivity_and_norm_u)
+
+def compare_reflectivity_to_norm_u_side_by_side(reflectivity_and_norm_u_dict):
+    set_latex_font_size()
+
+    textwidth = 455.2
+    scaling_fraction = 0.7
+    fig_dim = set_size(textwidth, scaling_fraction) 
+
+    #need to do a golden ratio for portrait plots!?
+    fig, axes = plt.subplots(1, 2, figsize=(fig_dim[0]/scaling_fraction, fig_dim[0]*1))
+    # plt.subplots_adjust(top=0.95, right=0.95, bottom=0.15)
+    # plt.subplots_adjust(top=0.95, right=0.95, left=0.15, bottom=0.18)
+    plt.subplots_adjust(top=0.97, right=0.96, left=0.12, bottom=0.102, hspace=0.055)
+
+    reflectivity = axes[0]
+    norm_u = axes[1]
+
+    linesstyles = [':', '-.', '--', '-']
+    i = 0
+    for leg_lab, lines in reflectivity_and_norm_u_dict.items():
+        s=linesstyles[i]
+        reflectivity.plot(lines[0][0], lines[0][1],linestyle=s, label=f"{leg_lab}\% effused")
+        norm_u.plot(lines[1][0], lines[1][1],linestyle=s, label=f"{leg_lab}\% effused")
+        i+=1
+        
+    reflectivity.set(
+        #title="Modelled acoustic reflectometry response with changing effusion level", 
+        xlabel="Frequency (Hz)", 
+        ylabel=r"Reflectivity=$|p'|/|I|$"
+        )
+    
+    norm_u.set(
+        #title="Modelled acoustic reflectometry response with changing effusion level", 
+        xlabel="Frequency (Hz)", 
+        ylabel=r"$Z^s_{\mathrm{EC}} = p'/u' \thinspace (\mathrm{kg} \mathrm{m}^{-2} \mathrm{s}^{-1})$",
+        )
+    
+    reflectivity.set_xlim([1600, 4500])
+    norm_u.set_xlim([1600, 4500])
+
+    reflectivity.set_ylim([-0.1, 1.1])
+    norm_u.set_ylim([-0.1, 1.1])
+
+    reflectivity.legend()
+    norm_u.legend()
+
+    plt.savefig(f"ravicz_model/final_report_plots_norm_u/reflectivity_v_impedance_side_by_side.pdf")
+    plt.show()
+
+# compare_reflectivity_to_norm_u_side_by_side(reflectivity_and_norm_u)
 
 def generate_EC_impedance_bode_plot_data_using_pure_inductance(ear_model):
     """model ear canal as narrow duct --> inductance analogy
@@ -246,7 +380,7 @@ def compare_ravicz_impedances_for_latex(ear_dict:dict, ear_canal=False):
         phase_ax.plot(ear_data[0], ear_data[2],line_style, label=f"{ear_name}\% effused")
         i+=1
 
-    mag_ax.set(ylabel="Magnitude (mks ohm)")#, xlabel="Frequency (Hz)")
+    mag_ax.set(ylabel=r"Magnitude ($\mathrm{kg} \mathrm{m}^{-4} \mathrm{s}^{-1}$)")#, xlabel="Frequency (Hz)")
     mag_ax.set_xscale("log")
     mag_ax.set_xticks([100, 1000, 10000, 100000])
     mag_ax.set_yscale("log")
@@ -270,7 +404,7 @@ def compare_ravicz_impedances_for_latex(ear_dict:dict, ear_canal=False):
     phase_ax.legend()
 
     impedance_type = "me" if not ear_canal else "ec"
-    plt.savefig(f"ravicz_model/final_report_plots/{impedance_type}_impedance_bode_ravicz_latex.pdf")
+    plt.savefig(f"ravicz_model/final_report_plots_norm_u/{impedance_type}_impedance_bode_ravicz_latex.pdf")
     plt.show()
 
 
@@ -280,7 +414,7 @@ ear_dict_rav_effu = {
     "50": effused_middle_ear_50,
     "100": effused_middle_ear_100,
 }
-compare_ravicz_impedances_for_latex(ear_dict_rav_effu, ear_canal=False)
+# compare_ravicz_impedances_for_latex(ear_dict_rav_effu, ear_canal=True)
 
 
 
@@ -298,57 +432,7 @@ def spectral_angle_calculation():
     #try what the patent actually says (increase by 20% from null value)
     pass
 
-def spectral_angle_v_r_toc(ear_dict:dict, plot_ravicz=False, annotate=False):
-    #function for plotting angle as function of R_TOC?
-    
-    set_latex_font_size()
 
-    textwidth = 455.2
-    scaling_fraction = 0.7
-    fig_dim = set_size(textwidth,scaling_fraction) 
-    fig, ax = plt.subplots(figsize=(fig_dim[0]/scaling_fraction, fig_dim[1]*1.5))
-    plt.subplots_adjust(top=0.95, right=0.96, left=0.12, bottom=0.145)
-    
-    scale_factor=2000
-
-    marker_style = ['+b', 'xm']
-    i=0
-    for ear_name, middle_ear in ear_dict.items():
-        angle_list = []
-        r_toc_list = np.linspace(50, 300, 20) # for now?
-        for r_toc in r_toc_list:
-            middle_ear.set_r_toc(r_toc*10**6)
-            response = end_to_end_get_ar_response(middle_ear, start_f=2500, stop_f=3500, num=5000)
-            angle = find_spectral_angle(response[0], response[1], scale_factor)
-            angle_list.append(angle)
-
-        ax.plot(r_toc_list, angle_list, marker_style[i], label=f"{ear_name}\% effused model parameters")
-        i+=1
-    
-    ax.set(
-        xlabel=r"$R_{\mathrm{TOC}}~(10^6~\mathrm{Pa~s/m^3})$", 
-        ylabel="Spectral Angle (degrees)"
-        )  
-    
-    if plot_ravicz:
-        ravciz_rtoc = [61, 103, 110, 95, 130, 160, 310]
-        ravicz_angles = [84, 69, 69, 52, 52, 52, 52]
-        ax.plot(ravciz_rtoc, ravicz_angles, 'ro', label="Actual modelled datapoints")
-
-        if annotate:
-            labels = ["0%", "25%", "40%", "50%", "70%", "100%", "100%*"]
-            for i, label in enumerate(labels):
-                ax.annotate(label, (ravciz_rtoc[i], ravicz_angles[i]))
-
-    plt.legend()
-    plt.savefig("ravicz_model/final_report_plots/spectral_angle_v_r_toc.pdf")
-    plt.show()
-
-ear_dict_rav_sgar = {
-    "0": normal_middle_ear,
-    "50": effused_middle_ear_50,
-}
-# spectral_angle_v_r_toc(ear_dict_rav_sgar, plot_ravicz=True)
 
 
 def spectral_angle_v_tm_coverage_for_latex(effusion_ar_resp:dict):
@@ -360,7 +444,7 @@ def spectral_angle_v_tm_coverage_for_latex(effusion_ar_resp:dict):
 
     coverages = []
     angles=[]
-    scale_factor=2000
+    scale_factor=3000
     for coverage, x_and_y in effusion_ar_resp.items():
         angle = find_spectral_angle(x_and_y[0], x_and_y[1], scale_factor)
         coverages.append(int(coverage))
@@ -369,20 +453,82 @@ def spectral_angle_v_tm_coverage_for_latex(effusion_ar_resp:dict):
     ax.plot(coverages, angles, 'ro')
     ax.set(xlabel="Percentage of Eardrum Covered by Effusion (\%)", ylabel="Spectral Angle (degrees)")
 
-    plt.savefig("ravicz_model/final_report_plots/spectral_angle_v_tm_cover.pdf")            
+    plt.savefig("ravicz_model/final_report_plots_norm_u/spectral_angle_v_tm_cover.pdf")            
     plt.show()
 
+    return angles
 
-tm_and_effusion_modified_range_for_spectral_angle = {
-    "0": end_to_end_get_ar_response(RaviczMiddleEar(), start_f=2500, stop_f=3500, num=5000),
-    "25": end_to_end_get_ar_response(RaviczMiddleEar(C_MEC=6.5*10**-12, M_TOC=0.4*10**3, R_TOC=103*10**6), start_f=2500, stop_f=3500, num=5000),
-    "40": end_to_end_get_ar_response(RaviczMiddleEar(C_MEC=6.1*10**-12, M_TOC=1.5*10**3, R_TOC=110*10**6),start_f=2500, stop_f=3500, num=5000),
-    "50": end_to_end_get_ar_response(RaviczMiddleEar(C_MEC=5.4*10**-12, M_TOC=25*10**3, R_TOC=95*10**6), start_f=2500, stop_f=3500, num=5000),
-    "70": end_to_end_get_ar_response(RaviczMiddleEar(C_MEC=5.0*10**-12, M_TOC=32*10**3, R_TOC=130*10**6),start_f=2500, stop_f=3500, num=5000),
-    "100": end_to_end_get_ar_response(RaviczMiddleEar(C_MEC=3.1*10**-12, M_TOC=190*10**3, R_TOC=160*10**6), start_f=2500, stop_f=3500, num=5000),
+# TODO: you could reorder and return some values here
+
+tm_and_effusion_modified_range_for_spectral_angle_norm_u = {
+    "0": end_to_end_get_ar_response_norm_velocity(RaviczMiddleEar(), start_f=2500, stop_f=3500, num=5000),
+    "25": end_to_end_get_ar_response_norm_velocity(RaviczMiddleEar(C_MEC=6.5*10**-12, M_TOC=0.4*10**3, R_TOC=103*10**6), start_f=2500, stop_f=3500, num=5000),
+    "40": end_to_end_get_ar_response_norm_velocity(RaviczMiddleEar(C_MEC=6.1*10**-12, M_TOC=1.5*10**3, R_TOC=110*10**6),start_f=2500, stop_f=3500, num=5000),
+    "50": end_to_end_get_ar_response_norm_velocity(RaviczMiddleEar(C_MEC=5.4*10**-12, M_TOC=25*10**3, R_TOC=95*10**6), start_f=2500, stop_f=3500, num=5000),
+    "70": end_to_end_get_ar_response_norm_velocity(RaviczMiddleEar(C_MEC=5.0*10**-12, M_TOC=32*10**3, R_TOC=130*10**6),start_f=2500, stop_f=3500, num=5000),
+    "100": end_to_end_get_ar_response_norm_velocity(RaviczMiddleEar(C_MEC=3.1*10**-12, M_TOC=190*10**3, R_TOC=160*10**6), start_f=2500, stop_f=3500, num=5000),
     # "100" : end_to_end_get_ar_response(RaviczMiddleEar(C_MEC=0.77*10**-12, M_TOC=610*10**3, R_TOC=310*10**6), start_f=2500, stop_f=3500, num=5000)
 }
-# spectral_angle_v_tm_coverage_for_latex(tm_and_effusion_modified_range_for_spectral_angle)
+
+
+
+def spectral_angle_v_r_toc(ear_dict:dict, ravicz_angles:list, annotate=False):
+    #function for plotting angle as function of R_TOC?
+    
+    set_latex_font_size()
+
+    textwidth = 455.2
+    scaling_fraction = 0.7
+    fig_dim = set_size(textwidth,scaling_fraction) 
+    fig, ax = plt.subplots(figsize=(fig_dim[0]/scaling_fraction, fig_dim[1]*1.5))
+    plt.subplots_adjust(top=0.95, right=0.96, left=0.12, bottom=0.145)
+    
+    scale_factor=3000
+
+    marker_style = ['+b', 'xm']
+    i=0
+    for ear_name, middle_ear in ear_dict.items():
+        angle_list = []
+        r_toc_list = np.linspace(50, 300, 20) # for now?
+        for r_toc in r_toc_list:
+            middle_ear.set_r_toc(r_toc*10**6)
+            response = end_to_end_get_ar_response_norm_velocity(middle_ear, start_f=2500, stop_f=3500, num=5000) #THIS WAS CHANGED
+            angle = find_spectral_angle(response[0], response[1], scale_factor)
+            angle_list.append(angle)
+
+        ax.plot(r_toc_list, angle_list, marker_style[i], label=f"{ear_name}\% effused model parameters")
+        i+=1
+    
+    ax.set(
+        xlabel=r"$R_{\mathrm{TOC}}~(10^6~\mathrm{Pa~s/m^3})$", 
+        ylabel="Spectral Angle (degrees)"
+        )  
+    
+    
+    ravciz_rtoc = [61, 103, 110, 95, 130, 160]  #, 310]
+    # ravicz_angles = [84, 69, 69, 52, 52, 52, 52]
+    ax.plot(ravciz_rtoc, ravicz_angles, 'ro', label="Actual modelled datapoints")
+
+    if annotate:
+        labels = ["0%", "25%", "40%", "50%", "70%", "100%"]
+        for i, label in enumerate(labels):
+            ax.annotate(label, (ravciz_rtoc[i], ravicz_angles[i]))
+
+    plt.legend()
+    plt.savefig("ravicz_model/final_report_plots_norm_u/spectral_angle_v_r_toc.pdf")
+    plt.show()
+
+ear_dict_rav_sgar = {
+    "0": normal_middle_ear,
+    "50": effused_middle_ear_50,
+}
+
+
+ravicz_angles = spectral_angle_v_tm_coverage_for_latex(tm_and_effusion_modified_range_for_spectral_angle_norm_u)
+spectral_angle_v_r_toc(ear_dict_rav_sgar, ravicz_angles=ravicz_angles)
+
+
+
 
 
 def illustrate_how_angle_is_calculated(effused_dict):
@@ -393,21 +539,21 @@ def illustrate_how_angle_is_calculated(effused_dict):
     line_styles=[':', '-.', '-']
     i=0
     for legend_label, x_and_y in effused_dict.items():
-        ax = polyfit_with_linear(ax, x_and_y[0], x_and_y[1], legend_label, colour[i], linestyle=line_styles[i])
+        ax = polyfit_with_linear(ax, x_and_y[0], x_and_y[1], legend_label, colour[i], linestyle=line_styles[i], scale_factor=3000)
         i+=1
     
-    ax.set(xlabel="Frequency (Hz)", ylabel="Normalised Pressure Amplitude")
+    ax.set(xlabel="Frequency (Hz)", ylabel=r"$Z^s_{\mathrm{EC}} = p'/u' \thinspace (\mathrm{kg} \mathrm{m}^{-2} \mathrm{s}^{-1})$")
     plt.legend()
-    plt.savefig("ravicz_model/final_report_plots/illustrate_sgar.pdf")
+    plt.savefig("ravicz_model/final_report_plots_norm_u/illustrate_sgar.pdf")
     plt.show()
 
 
 select_eff_sgar_dict = {
-    "0": tm_and_effusion_modified_range_for_spectral_angle["0"], 
-    "25": tm_and_effusion_modified_range_for_spectral_angle["25"], 
-    "100": tm_and_effusion_modified_range_for_spectral_angle["100"],
+    "0": tm_and_effusion_modified_range_for_spectral_angle_norm_u["0"], 
+    "25": tm_and_effusion_modified_range_for_spectral_angle_norm_u["25"], 
+    "100": tm_and_effusion_modified_range_for_spectral_angle_norm_u["100"],
     }
-# illustrate_how_angle_is_calculated(select_eff_sgar_dict)
+illustrate_how_angle_is_calculated(select_eff_sgar_dict)
 
 def illustrate_issues_with_angle_calculation(ar_resp):
     x=ar_resp[0]
@@ -421,18 +567,18 @@ def illustrate_issues_with_angle_calculation(ar_resp):
     left= min_index-offset
    
     right = min_index+offset
-    
+    scale_factor = 3000
     p_left=np.polyfit(x[:left], y[:left], deg=1)
     print(f"left equation is: y={p_left[0]}x+{p_left[1]}")
     f_left=np.poly1d(p_left)
-    left_angle = math.degrees(math.atan(p_left[0]*2000)) #scale by 2000
+    left_angle = math.degrees(math.atan(p_left[0]*scale_factor))
     print(f"left angle is {left_angle}")
 
     
     p_right=np.polyfit(x[right:], y[right:], deg=1)
     print(f"right equation is: y={p_right[0]}x+{p_right[1]}")
     f_right=np.poly1d(p_right)
-    right_angle = math.degrees(math.atan(p_right[0]*2000))
+    right_angle = math.degrees(math.atan(p_right[0]*scale_factor))
     print(f"right angle is {right_angle}")
 
     angle=180 - right_angle + left_angle
@@ -443,27 +589,27 @@ def illustrate_issues_with_angle_calculation(ar_resp):
     textwidth = 455.2
     scaling_fraction=0.7
     fig_dim = set_size(textwidth,scaling_fraction) 
-    fig, (ax0,ax1) = plt.subplots(1, 2, sharey=False, gridspec_kw={"width_ratios": [3, 1]}, figsize=(fig_dim[0]/scaling_fraction, fig_dim[1]*1.5))
+    fig, (ax0,ax1) = plt.subplots(1, 2, sharey=True, gridspec_kw={"width_ratios": [3, 1]}, figsize=(fig_dim[0]/scaling_fraction, fig_dim[1]*1.5))
     
     #this will likely need to be set manually
-    plt.subplots_adjust(top=0.95, right=0.96, left=0.12, bottom=0.145, wspace=0.345)
+    plt.subplots_adjust(top=0.95, right=0.96, left=0.12, bottom=0.145, wspace=0.13)
 
 
     ax0.plot(x,y, linestyle='-.', color="tab:orange")
     ax0.plot(x[:min_index-1],f_left(x[:min_index-1]),linestyle='--', alpha=0.4,color="tab:orange")
     ax0.plot(x[min_index:],f_right(x[min_index:]),linestyle='--', alpha=0.4,color="tab:orange")
-
-    ax0.set(xlabel="Frequency (Hz)", ylabel="Normalised Pressure Amplitude")
+    ax0.set_xticks([2500,3000,3500])
+    ax0.set(xlabel="Frequency (Hz)", ylabel=r"$Z^s_{\mathrm{EC}} = p'/u' \thinspace (\mathrm{kg} \mathrm{m}^{-2} \mathrm{s}^{-1})$")
 
     ax1.plot(x,y, linestyle='-.', color="tab:orange")
     ax1.plot(x[:min_index-1],f_left(x[:min_index-1]),linestyle='--', alpha=0.4,color="tab:orange")
     ax1.plot(x[min_index:],f_right(x[min_index:]),linestyle='--', alpha=0.4,color="tab:orange")
-
-    ax1.set(xlabel="Frequency (Hz)", ylabel="Normalised Pressure Amplitude")
-    plt.savefig("ravicz_model/final_report_plots/illustrate_issue_with_angle.pdf")
+    ax1.set_xticks([2500,3000,3500])
+    ax1.set(xlabel="Frequency (Hz)")
+    plt.savefig("ravicz_model/final_report_plots_norm_u/illustrate_issue_with_angle.pdf")
     plt.show()
 
-# illustrate_issues_with_angle_calculation(select_eff_sgar_dict["25"])
+illustrate_issues_with_angle_calculation(select_eff_sgar_dict["25"])
 
 
 def week5plots():
@@ -525,7 +671,7 @@ def healthy_ear_changing_one_parameter_impedance(ear_dict:dict, ear_canal=False)
         phase_ax.plot(ear_data[0], ear_data[2],line_style, label=f"{ear_name}\% effused")
         i+=1
 
-    mag_ax.set(ylabel="Magnitude (mks ohm)")#, xlabel="Frequency (Hz)")
+    mag_ax.set(ylabel=r"Magnitude ($\mathrm{kg} \mathrm{m}^{-4} \mathrm{s}^{-1}$)")#, xlabel="Frequency (Hz)")
     mag_ax.set_xscale("log")
     mag_ax.set_xticks([100, 1000, 10000, 100000])
     mag_ax.set_yscale("log")
@@ -548,7 +694,7 @@ def healthy_ear_changing_one_parameter_impedance(ear_dict:dict, ear_canal=False)
     phase_ax.legend()
 
     impedance_type = "me" if not ear_canal else "ec"
-    plt.savefig(f"ravicz_model/final_report_plots/{impedance_type}_impedance_bode_parametric.pdf")
+    plt.savefig(f"ravicz_model/final_report_plots_norm_u/{impedance_type}_impedance_bode_parametric.pdf")
     plt.show()
 
 one_changed_ear = {
@@ -559,9 +705,9 @@ one_changed_ear = {
     "100": effused_middle_ear_100,
 }
 
-healthy_ear_changing_one_parameter_impedance(one_changed_ear, ear_canal=False)
+# healthy_ear_changing_one_parameter_impedance(one_changed_ear, ear_canal=False)
 
-def healthy_ear_changing_one_parameter_acoustic_reflectometry(effused_dict:dict):
+def healthy_ear_changing_one_parameter_acoustic_reflectometry(effused_dict:dict, reflectivity=True):
     """
     plot healthy ear Ar response with m_toc set at 25 
 
@@ -593,11 +739,19 @@ def healthy_ear_changing_one_parameter_acoustic_reflectometry(effused_dict:dict)
         s=linesstyles[i]
         ax.plot(line[0], line[1],linestyle=s, color=colours[i], label=f"{ear_name}\% effused")
         i+=1
-        
-    ax.set(
-        xlabel="Frequency (Hz)", 
-        ylabel="Normalised Pressure Amplitude",
-        )
+    
+    if reflectivity:
+        ax.set(
+            #title="Modelled acoustic reflectometry response with changing effusion level", 
+            xlabel="Frequency (Hz)", 
+            ylabel=r"Reflectivity=$|p'|/|I|$",
+            )
+    else:
+        ax.set(
+            #title="Modelled acoustic reflectometry response with changing effusion level", 
+            xlabel="Frequency (Hz)", 
+            ylabel=r"$Z^s_{\mathrm{EC}} = p'/u' \thinspace (\mathrm{kg} \mathrm{m}^{-2} \mathrm{s}^{-1})$",
+            )
     
     ax.set_xlim([1600, 4500])
     ax.set_ylim([-0.1, 1.1])
@@ -605,14 +759,100 @@ def healthy_ear_changing_one_parameter_acoustic_reflectometry(effused_dict:dict)
 
     plt.legend()
     
-    plt.savefig("ravicz_model/final_report_plots/param_binary_output_latex.pdf")
+    plt.savefig("ravicz_model/final_report_plots_norm_u/param_binary_output_latex.pdf")
     plt.show()
 
 
 binary_dict = {
-    "0": middle_ear_effusion_state["0"],
-    "changed": end_to_end_get_ar_response(RaviczMiddleEar(M_TOC=25*10**3)),
-    "100": middle_ear_effusion_state["100"],
+    "0": middle_ear_effusion_state_norm_u["0"],
+    "changed": end_to_end_get_ar_response_norm_velocity(RaviczMiddleEar(M_TOC=25*10**3)),
+    "100": middle_ear_effusion_state_norm_u["100"],
 }
 
-# healthy_ear_changing_one_parameter_acoustic_reflectometry(binary_dict)
+healthy_ear_changing_one_parameter_acoustic_reflectometry(binary_dict, reflectivity=False)
+
+
+
+
+
+
+
+
+def compare_ravicz_impedances_for_tympanometry(ear_dict:dict, ear_canal=False):
+    """
+    Comparing middle ear Impedance bode plots for different levels of effusion for Ravicz model
+    """
+    set_latex_font_size()
+
+    textwidth = 455.2
+    scaling_fraction = 0.7
+    fig_dim = set_size(textwidth, scaling_fraction) 
+
+    #need to do a golden ratio for portrait plots!?
+    fig, axes = plt.subplots(2, 1,sharex=True, figsize=(fig_dim[0]/scaling_fraction, fig_dim[0]*1.5))
+    # plt.subplots_adjust(top=0.95, right=0.95, bottom=0.15)
+    # plt.subplots_adjust(top=0.95, right=0.95, left=0.15, bottom=0.18)
+    plt.subplots_adjust(top=0.97, right=0.96, left=0.12, bottom=0.102, hspace=0.055)
+
+    ear_impedance_dict = {}
+
+    for ear_name, ear_model in ear_dict.items():
+        if ear_canal:
+            ear_impedance_dict[ear_name] = list(generate_EC_impedance_bode_plot_data_using_pure_inductance(ear_model))
+        else:
+            ear_impedance_dict[ear_name] = list(generate_and_plot_impedance_bode_plot(ear_name, ear_model, no_plot=True, radians=False))
+
+    # plot mag and phase stacked
+    # fig, axes = plt.subplots(2, 1, figsize=(6,8))
+
+    mag_ax = axes[0]
+    phase_ax = axes[1]
+
+    #using line styles for black and white display (ugly?)
+    line_styles = [":",'-.', '--', '-',]
+    i = 0
+    for ear_name, ear_data in ear_impedance_dict.items():
+        #plot impedance magnitude data
+        line_style = line_styles[i]
+        mag_ax.plot(ear_data[0], ear_data[1], line_style, label=f"{ear_name}\% effused")
+
+        #plot impedance phase data
+        phase_ax.plot(ear_data[0], ear_data[2],line_style, label=f"{ear_name}\% effused")
+        i+=1
+
+    mag_ax.set(ylabel=r"Magnitude ($\mathrm{kg} \mathrm{m}^{-4} \mathrm{s}^{-1}$)")#, xlabel="Frequency (Hz)")
+    mag_ax.set_xscale("log")
+    mag_ax.set_xticks([100, 1000, 10000, 100000])
+    mag_ax.set_yscale("log")
+    mag_ax.set_ylim(10**7, 3*10**9)
+
+    
+    phase_ax.set(ylabel="Phase (degrees)", xlabel="Frequency (Hz)")
+    phase_ax.set_xscale("log")
+    phase_ax.set_xticks([100, 1000, 10000, 100000])
+    phase_ax.set_yticks([-90, -45,0, 45, 90])
+    phase_ax.set_ylim(-0.4*2*180, 0.4*2*180)
+
+    # mag_ax.legend(loc='lower right')
+    
+
+    x_start=215
+    x_end=230
+    phase_ax.axvspan(x_start, x_end, facecolor='yellow', alpha=0.3)
+    mag_ax.axvspan(x_start, x_end, facecolor='yellow', alpha=0.3)
+    # plt.axvline(x=226, color='r', linestyle='--')
+
+    phase_ax.legend()
+
+    impedance_type = "me" if not ear_canal else "ec"
+    plt.savefig(f"ravicz_model/final_report_plots_norm_u/{impedance_type}_impedance_bode_tymp.pdf")
+    plt.show()
+
+
+ear_dict_rav_effu = {
+    "0": normal_middle_ear,
+    "25": effused_middle_ear_25,
+    "50": effused_middle_ear_50,
+    "100": effused_middle_ear_100,
+}
+# compare_ravicz_impedances_for_tympanometry(ear_dict_rav_effu)

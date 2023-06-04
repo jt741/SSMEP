@@ -54,11 +54,11 @@ def line_severity_colour_generator(line_dict):
 
 # effused_alpha_dict = line_severity_colour_generator(middle_ear_effusion_state) #shouldn't include the healthy one
 
-def set_latex_font_size():
+def set_latex_font_size(font_size=12):
     plt.rcParams['text.latex.preamble']=[r"\usepackage{lmodern}"]
     #Options
     params = {'text.usetex' : True,
-            'font.size' : 12,
+            'font.size' : font_size,
             'font.family' : 'lmodern',
             }
     plt.rcParams.update(params) 
@@ -99,11 +99,15 @@ def plot_ravicz_changing_effusion_for_latex(effused_dict):
         ax.plot(line[0], line[1],linestyle=s, label=f"{leg_lab}\% effused")
         i+=1
         
-    ax.set(
-        #title="Modelled acoustic reflectometry response with changing effusion level", 
-        xlabel="Frequency (Hz)", 
-        ylabel="Normalised Pressure Amplitude",
-        )
+    # ax.set(
+    #     #title="Modelled acoustic reflectometry response with changing effusion level", 
+    #     xlabel="Frequency (Hz)", 
+    #     ylabel="Normalised Pressure Amplitude",
+    #     )
+    font_size=16
+    ax.set_xlabel("Frequency (Hz)", fontsize=font_size)
+    ax.set_ylabel("Normalised Pressure Amplitude", fontsize=font_size)
+    plt.legend()
     
     ax.set_xlim([1600, 4500])
     ax.set_ylim([-0.1, 1.1])
@@ -118,12 +122,222 @@ def plot_ravicz_changing_effusion_for_latex(effused_dict):
     # ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
     # ax.legend(loc='upper left', bbox_to_anchor=(1.04, 1))
     
-    plt.savefig("ravicz_model/final_report_plots/different_effusions_latex.pdf")
+    plt.savefig("ravicz_model/final_pres_plots/different_effusions_latex.svg")
     plt.show()
 
 # plot_ravicz_changing_effusion_for_latex(middle_ear_effusion_state)
-# plot_ravicz_changing_effusion_for_latex(middle_ear_effusion_state_norm_u)
 
+
+#PRESNTATINON PLOTS
+def set_labels_and_limits(ax):
+    # ax.set(xlabel="Frequency (Hz)", ylabel="Normalised Pressure Amplitude")
+    font_size=18
+    ax.set_xlabel("Frequency (Hz)", fontsize=font_size)
+    ax.set_ylabel("Normalised Pressure Amplitude", fontsize=font_size)
+    ax.set_xlim([2500, 3500])
+    ax.set_ylim([-0.05, 0.8])
+
+    return ax
+
+def set_figure_scaling_for_comparison_presentation(scaling_fraction=0.7, y_dim_extra_scaling=1 ):
+    textwidth = 455.2
+    # fig_dim = set_size(textwidth,scaling_fraction) 
+    # fig, ax = plt.subplots(figsize=(fig_dim[0]/scaling_fraction, fig_dim[1]*y_dim_extra_scaling))
+    fig,ax = plt.subplots()
+    #this will likely need to be set manually
+    # plt.subplots_adjust(top=0.95, right=0.96, left=0.12, bottom=0.18)
+    plt.subplots_adjust(top=0.95, right=0.96, left=0.12, bottom=0.12)
+
+    return fig,ax
+
+
+def compare_model_with_real_build_for_presentation(model_dict, measured_data):
+    """
+    plot 4  in total, (building the graph up)
+    maybe also plot one with both the ravicz data? or just include ur illustrative diagram in tikz
+    """
+
+    model_0:list[list, list] = model_dict["0"]  
+    model_100 = model_dict["100"]
+
+    real_0:list[list, list] = measured_data["0"]  
+    real_100 = measured_data["100"]
+
+    set_latex_font_size(14)
+
+    # #plot figure 1 (healthy real alone)
+    # i = 1
+    # fig1, ax1 = set_figure_scaling_for_comparison_presentation(y_dim_extra_scaling=1.3)
+    # ax1 = set_labels_and_limits(ax1)
+    # ax1.plot(real_0[0], real_0[1], linestyle=(0, (3, 5, 1, 5)),color="tab:blue", label=f"Measured healthy ear")
+    # plt.legend(loc="upper center")
+    # plt.savefig(f"ravicz_model/final_pres_plots/comparison_{i}.svg")
+    
+    
+    # #plot figure 2 (healthy both)
+    # i = 2
+    # fig2, ax2 = set_figure_scaling_for_comparison_presentation(y_dim_extra_scaling=1.3)
+    # ax2 = set_labels_and_limits(ax2)
+    # ax2.plot(real_0[0], real_0[1], linestyle=(0, (3, 5, 1, 5)),color="tab:blue", label=f"Measured healthy ear")
+    # ax2.plot(model_0[0], model_0[1], ':', color="tab:blue", label=f"Modelled 0\% effused")
+
+    # plt.legend(loc="upper center")
+    # plt.savefig(f"ravicz_model/final_pres_plots/comparison_{i}.svg")
+    
+    # #plot figure 3 (real effused alone)
+    # i = 3
+    # fig3, ax3 = set_figure_scaling_for_comparison_presentation(y_dim_extra_scaling=1.3)
+    # ax3 = set_labels_and_limits(ax3)
+    # ax3.plot(real_0[0], real_0[1], linestyle=(0, (3, 5, 1, 5)),color="tab:blue",alpha=0.3, label=f"Measured healthy ear")
+    # ax3.plot(model_0[0], model_0[1], ':', color="tab:blue", alpha=0.3, label=f"Modelled 0\% effused")
+
+    # ax3.plot(real_100[0], real_100[1], linestyle=(0, (5, 1)),color="tab:red", label=f"Measured effused ear")
+
+    # plt.legend(loc="upper center")
+    # plt.savefig(f"ravicz_model/final_pres_plots/comparison_{i}.svg")
+    
+    # #plot figure 4 (both effused alone)
+    # i = 4
+    # fig4, ax4 = set_figure_scaling_for_comparison_presentation(y_dim_extra_scaling=1.3)
+    # ax4 = set_labels_and_limits(ax4)
+    # ax4.plot(real_0[0], real_0[1], linestyle=(0, (3, 5, 1, 5)),color="tab:blue",alpha=0.3, label=f"Measured healthy ear")
+    # ax4.plot(model_0[0], model_0[1], ':', color="tab:blue", alpha=0.3, label=f"Modelled 0\% effused")
+
+    # ax4.plot(real_100[0], real_100[1], linestyle=(0, (5, 1)),color="tab:red", label=f"Measured effused ear")    
+    # ax4.plot(model_100[0], model_100[1], '-', color="tab:red",  label=f"Modelled 100\% effused")
+    
+    # plt.legend(loc="upper center")
+    # plt.savefig(f"ravicz_model/final_pres_plots/comparison_{i}.svg")
+    
+    
+    # #plot figure 5 (everything, highlight all (final plot whooops))
+    # i = 5
+    # fig5, ax5 = set_figure_scaling_for_comparison_presentation(y_dim_extra_scaling=1.3)
+    # ax5 = set_labels_and_limits(ax5)
+    # ax5.plot(real_0[0], real_0[1], linestyle=(0, (3, 5, 1, 5)),color="tab:blue", label=f"Measured healthy ear")
+    # ax5.plot(model_0[0], model_0[1], ':', color="tab:blue", label=f"Modelled 0\% effused")
+
+    # ax5.plot(real_100[0], real_100[1], linestyle=(0, (5, 1)),color="tab:red",label=f"Measured effused ear")    
+    # ax5.plot(model_100[0], model_100[1], '-', color="tab:red", label=f"Modelled 100\% effused")
+    
+    # plt.legend(loc="upper center")
+    # plt.savefig(f"ravicz_model/final_pres_plots/comparison_{i}.svg")
+    
+
+    # #plot figure 6 (everything, highlight healthy)
+    # i = 6
+    # fig6, ax6 = set_figure_scaling_for_comparison_presentation(y_dim_extra_scaling=1.3)
+    # ax6 = set_labels_and_limits(ax6)
+    # ax6.plot(real_0[0], real_0[1], linestyle=(0, (3, 5, 1, 5)),color="tab:blue",alpha=0.3, label=f"Measured healthy ear")
+    # ax6.plot(model_0[0], model_0[1], ':', color="tab:blue", alpha=0.3, label=f"Modelled 0\% effused")
+
+    # ax6.plot(real_100[0], real_100[1], linestyle=(0, (5, 1)),color="tab:red",label=f"Measured effused ear")    
+    # ax6.plot(model_100[0], model_100[1], '-', color="tab:red",  label=f"Modelled 100\% effused")
+    
+    # plt.legend(loc="upper center")
+    # plt.savefig(f"ravicz_model/final_pres_plots/comparison_{i}.svg")
+    
+    ###
+
+    #plot figure 8 (measured/real curves)
+    i = 8
+    fig8, ax8 = set_figure_scaling_for_comparison_presentation(y_dim_extra_scaling=1.3)
+    ax8 = set_labels_and_limits(ax8)
+    line_real_0, = ax8.plot(real_0[0], real_0[1], linestyle=(0, (3, 5, 1, 5)),color="tab:blue", label=f"Measured healthy ear")
+    # ax7.plot(model_0[0], model_0[1], ':', color="tab:blue", label=f"Modelled 0\% effused")
+
+    line_real_100, = ax8.plot(real_100[0], real_100[1], linestyle=(0, (5, 1)),color="tab:red",label=f"Measured effused ear")    
+    # ax7.plot(model_100[0], model_100[1], '-', color="tab:red",  label=f"Modelled 100\% effused")
+    
+
+    ax8.legend(handles=[line_real_0, line_real_100], labels=["Measured healthy ear", "Measured effused ear"], loc="upper left")
+    plt.savefig(f"ravicz_model/final_pres_plots/comparison_{i}.svg")
+
+    plt.show()
+
+    #plot figure 9 (modelled curves on top of measured curves, all the same)
+    i = 9
+    fig9, ax9 = set_figure_scaling_for_comparison_presentation(y_dim_extra_scaling=1.3)
+    ax9 = set_labels_and_limits(ax9)
+    line_real_0, =ax9.plot(real_0[0], real_0[1], linestyle=(0, (3, 5, 1, 5)),color="tab:blue", label=f"Measured healthy ear")
+    line_model_0, = ax9.plot(model_0[0], model_0[1], ':', color="tab:blue", label=f"Modelled 0\% effused")
+
+    line_real_100, = ax9.plot(real_100[0], real_100[1], linestyle=(0, (5, 1)),color="tab:red",label=f"Measured effused ear")    
+    line_model_100, =ax9.plot(model_100[0], model_100[1], '-', color="tab:red",  label=f"Modelled 100\% effused")
+    
+    legend_real = ax9.legend(handles=[line_real_0, line_real_100], loc="upper left")
+    legend_model = ax9.legend(handles=[line_model_0, line_model_100], loc="upper right")
+    ax9.add_artist(legend_real)
+    plt.savefig(f"ravicz_model/final_pres_plots/comparison_{i}.svg")
+
+    plt.show()
+
+
+    #plot figure 10 (modelled curves on top of measured curves, modelled a bit darker)
+    i = 10
+    fig10, ax10 = set_figure_scaling_for_comparison_presentation(y_dim_extra_scaling=1.3)
+    ax10 = set_labels_and_limits(ax10)
+    line_real_0, =ax10.plot(real_0[0], real_0[1], linestyle=(0, (3, 5, 1, 5)),color="tab:blue", alpha=0.3, label=f"Measured healthy ear")
+    line_model_0, = ax10.plot(model_0[0], model_0[1], ':', color="tab:blue", label=f"Modelled 0\% effused")
+
+    line_real_100, = ax10.plot(real_100[0], real_100[1], linestyle=(0, (5, 1)),color="tab:red", alpha=0.3, label=f"Measured effused ear")    
+    line_model_100, =ax10.plot(model_100[0], model_100[1], '-', color="tab:red",  label=f"Modelled 100\% effused")
+    
+    legend_real = ax10.legend(handles=[line_real_0, line_real_100], loc="upper left")
+    legend_model = ax10.legend(handles=[line_model_0, line_model_100], loc="upper right")
+    ax10.add_artist(legend_real)
+    plt.savefig(f"ravicz_model/final_pres_plots/comparison_{i}.svg")
+
+    plt.show()
+
+
+    #plot figure 11 (healthy ears emphasis)
+    i = 11
+    fig11, ax11 = set_figure_scaling_for_comparison_presentation(y_dim_extra_scaling=1.3)
+    ax11 = set_labels_and_limits(ax11)
+    line_real_0, =ax11.plot(real_0[0], real_0[1], linestyle=(0, (3, 5, 1, 5)),color="tab:blue",  label=f"Measured healthy ear")
+    line_model_0, = ax11.plot(model_0[0], model_0[1], ':', color="tab:blue", label=f"Modelled 0\% effused")
+
+    line_real_100, = ax11.plot(real_100[0], real_100[1], linestyle=(0, (5, 1)),color="tab:red", alpha=0.3, label=f"Measured effused ear")    
+    line_model_100, =ax11.plot(model_100[0], model_100[1], '-', color="tab:red", alpha=0.3, label=f"Modelled 100\% effused")
+    
+    legend_real = ax11.legend(handles=[line_real_0, line_real_100], loc="upper left")
+    legend_model = ax11.legend(handles=[line_model_0, line_model_100], loc="upper right")
+    ax11.add_artist(legend_real)
+
+    plt.savefig(f"ravicz_model/final_pres_plots/comparison_{i}.svg")
+
+    plt.show()
+
+
+    #plot figure 12 (effused ears emphasis)
+    i = 12
+    fig12, ax12 = set_figure_scaling_for_comparison_presentation(y_dim_extra_scaling=1.3)
+    ax12 = set_labels_and_limits(ax12)
+    line_real_0, =ax12.plot(real_0[0], real_0[1], linestyle=(0, (3, 5, 1, 5)),color="tab:blue", alpha=0.3,  label=f"Measured healthy ear")
+    line_model_0, = ax12.plot(model_0[0], model_0[1], ':', color="tab:blue",  alpha=0.3, label=f"Modelled 0\% effused")
+
+    line_real_100, = ax12.plot(real_100[0], real_100[1], linestyle=(0, (5, 1)),color="tab:red", label=f"Measured effused ear")    
+    line_model_100, =ax12.plot(model_100[0], model_100[1], '-', color="tab:red", label=f"Modelled 100\% effused")
+    
+    legend_real = ax12.legend(handles=[line_real_0, line_real_100], loc="upper left")
+    legend_model = ax12.legend(handles=[line_model_0, line_model_100], loc="upper right")
+    ax12.add_artist(legend_real)
+
+    plt.savefig(f"ravicz_model/final_pres_plots/comparison_{i}.svg")
+
+    plt.show()
+
+model_dictionary = {
+    "0": end_to_end_get_ar_response(RaviczMiddleEar()),
+    "100": end_to_end_get_ar_response(RaviczMiddleEar(C_MEC=3.1*10**-12, M_TOC=190*10**3, R_TOC=160*10**6))
+}
+
+real_dictionary = {
+    "0": (WAVELY_HEALTHY_X, WAVELY_HEALTHY_Y),
+    "100": (WAVELY_FULL_X, WAVELY_FULL_Y),
+}
+# compare_model_with_real_build_for_presentation(model_dictionary, real_dictionary)
 
 def compare_ravicz_with_real_for_latex(ravicz_dict, measured_data):
     """
@@ -151,8 +365,8 @@ def compare_ravicz_with_real_for_latex(ravicz_dict, measured_data):
         #ylabel=r'$\dfrac{\mathrm{Measured pressure field amplitude}}{\mathrm{Incident pressure wave amplitude}}$'
         ylabel="Normalised Pressure Amplitude"
         )
-    ax.set_xlim([1600, 4500])
-    ax.set_ylim([-0.1, 1.1])
+    ax.set_xlim([2600, 3500])
+    ax.set_ylim([-0.1, 0.8])
 
     # box = ax.get_position()
     # ax.set_position([box.x0, box.y0, box.width * 0.6, box.height])
@@ -160,16 +374,12 @@ def compare_ravicz_with_real_for_latex(ravicz_dict, measured_data):
     # Put a legend to the right of the current axis
     # ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
     plt.legend(loc="upper center")
-    plt.savefig("ravicz_model/final_report_plots/comparison_latex.pdf")
+    plt.savefig("ravicz_model/final_pres_plots/comparison_latex.svg")
     plt.show()
 
 ravicz_dictionary = {
     "0": end_to_end_get_ar_response(RaviczMiddleEar()),
     "100": end_to_end_get_ar_response(RaviczMiddleEar(C_MEC=3.1*10**-12, M_TOC=190*10**3, R_TOC=160*10**6))
-}
-ravicz_dictionary_norm_u = {
-    "0": end_to_end_get_ar_response_norm_velocity(RaviczMiddleEar()),
-    "100": end_to_end_get_ar_response_norm_velocity(RaviczMiddleEar(C_MEC=3.1*10**-12, M_TOC=190*10**3, R_TOC=160*10**6))
 }
 
 wavely_dictionary = {
@@ -178,7 +388,6 @@ wavely_dictionary = {
 }
 
 # compare_ravicz_with_real_for_latex(ravicz_dictionary,wavely_dictionary)
-# compare_ravicz_with_real_for_latex(ravicz_dictionary_norm_u,wavely_dictionary)
 
 
 def generate_EC_impedance_bode_plot_data_using_pure_inductance(ear_model):
@@ -270,7 +479,7 @@ def compare_ravicz_impedances_for_latex(ear_dict:dict, ear_canal=False):
     phase_ax.legend()
 
     impedance_type = "me" if not ear_canal else "ec"
-    plt.savefig(f"ravicz_model/final_report_plots/{impedance_type}_impedance_bode_ravicz_latex.pdf")
+    plt.savefig(f"ravicz_model/final_pres_plots/{impedance_type}_impedance_bode_ravicz_latex.svg")
     plt.show()
 
 
@@ -280,23 +489,9 @@ ear_dict_rav_effu = {
     "50": effused_middle_ear_50,
     "100": effused_middle_ear_100,
 }
-compare_ravicz_impedances_for_latex(ear_dict_rav_effu, ear_canal=False)
+# compare_ravicz_impedances_for_latex(ear_dict_rav_effu, ear_canal=False)
 
 
-
-def spectral_angle_calculation():
-    """
-    you can change the way you calculate spectral angle
-    your life will be easier if you make it work like this
-    angle = find_spectral_angle(response[0], response[1], scale_factor)
-    resp0 and rep1 are from ar response......
-    """
-    #do what you are currently doing first
-
-    #try q factor? doesn't it need to be illustarted
-
-    #try what the patent actually says (increase by 20% from null value)
-    pass
 
 def spectral_angle_v_r_toc(ear_dict:dict, plot_ravicz=False, annotate=False):
     #function for plotting angle as function of R_TOC?
@@ -341,7 +536,7 @@ def spectral_angle_v_r_toc(ear_dict:dict, plot_ravicz=False, annotate=False):
                 ax.annotate(label, (ravciz_rtoc[i], ravicz_angles[i]))
 
     plt.legend()
-    plt.savefig("ravicz_model/final_report_plots/spectral_angle_v_r_toc.pdf")
+    plt.savefig("ravicz_model/final_pres_plots/spectral_angle_v_r_toc.svg")
     plt.show()
 
 ear_dict_rav_sgar = {
@@ -367,9 +562,12 @@ def spectral_angle_v_tm_coverage_for_latex(effusion_ar_resp:dict):
         angles.append(angle)
 
     ax.plot(coverages, angles, 'ro')
-    ax.set(xlabel="Percentage of Eardrum Covered by Effusion (\%)", ylabel="Spectral Angle (degrees)")
+    # ax.set(xlabel="Percentage of Eardrum Covered by Effusion (\%)", ylabel="Spectral Angle (degrees)")
+    font_size=16
+    ax.set_xlabel("Percentage of Eardrum Covered by Effusion (\%)", fontsize=font_size)
+    ax.set_ylabel("Spectral Angle (degrees)", fontsize=font_size)
 
-    plt.savefig("ravicz_model/final_report_plots/spectral_angle_v_tm_cover.pdf")            
+    plt.savefig("ravicz_model/final_pres_plots/spectral_angle_v_tm_cover.svg")            
     plt.show()
 
 
@@ -380,9 +578,9 @@ tm_and_effusion_modified_range_for_spectral_angle = {
     "50": end_to_end_get_ar_response(RaviczMiddleEar(C_MEC=5.4*10**-12, M_TOC=25*10**3, R_TOC=95*10**6), start_f=2500, stop_f=3500, num=5000),
     "70": end_to_end_get_ar_response(RaviczMiddleEar(C_MEC=5.0*10**-12, M_TOC=32*10**3, R_TOC=130*10**6),start_f=2500, stop_f=3500, num=5000),
     "100": end_to_end_get_ar_response(RaviczMiddleEar(C_MEC=3.1*10**-12, M_TOC=190*10**3, R_TOC=160*10**6), start_f=2500, stop_f=3500, num=5000),
-    # "100" : end_to_end_get_ar_response(RaviczMiddleEar(C_MEC=0.77*10**-12, M_TOC=610*10**3, R_TOC=310*10**6), start_f=2500, stop_f=3500, num=5000)
+    "101" : end_to_end_get_ar_response(RaviczMiddleEar(C_MEC=0.77*10**-12, M_TOC=610*10**3, R_TOC=310*10**6), start_f=2500, stop_f=3500, num=5000)
 }
-# spectral_angle_v_tm_coverage_for_latex(tm_and_effusion_modified_range_for_spectral_angle)
+spectral_angle_v_tm_coverage_for_latex(tm_and_effusion_modified_range_for_spectral_angle)
 
 
 def illustrate_how_angle_is_calculated(effused_dict):
@@ -396,9 +594,12 @@ def illustrate_how_angle_is_calculated(effused_dict):
         ax = polyfit_with_linear(ax, x_and_y[0], x_and_y[1], legend_label, colour[i], linestyle=line_styles[i])
         i+=1
     
-    ax.set(xlabel="Frequency (Hz)", ylabel="Normalised Pressure Amplitude")
+    # ax.set(xlabel="Frequency (Hz)", ylabel="Normalised Pressure Amplitude")
+    font_size=16
+    ax.set_xlabel("Frequency (Hz)", fontsize=font_size)
+    ax.set_ylabel("Normalised Pressure Amplitude", fontsize=font_size)
     plt.legend()
-    plt.savefig("ravicz_model/final_report_plots/illustrate_sgar.pdf")
+    plt.savefig("ravicz_model/final_pres_plots/illustrate_sgar.svg")
     plt.show()
 
 
@@ -460,16 +661,12 @@ def illustrate_issues_with_angle_calculation(ar_resp):
     ax1.plot(x[min_index:],f_right(x[min_index:]),linestyle='--', alpha=0.4,color="tab:orange")
 
     ax1.set(xlabel="Frequency (Hz)", ylabel="Normalised Pressure Amplitude")
-    plt.savefig("ravicz_model/final_report_plots/illustrate_issue_with_angle.pdf")
+    plt.savefig("ravicz_model/final_pres_plots/illustrate_issue_with_angle.svg")
     plt.show()
 
 # illustrate_issues_with_angle_calculation(select_eff_sgar_dict["25"])
 
 
-def week5plots():
-    #need to do quite a few: (further show that we can divide responses into 0 vs above 50% effused)
-    #just use google slides as ref
-    pass
 
 
 def healthy_ear_changing_one_parameter_impedance(ear_dict:dict, ear_canal=False):
@@ -548,7 +745,7 @@ def healthy_ear_changing_one_parameter_impedance(ear_dict:dict, ear_canal=False)
     phase_ax.legend()
 
     impedance_type = "me" if not ear_canal else "ec"
-    plt.savefig(f"ravicz_model/final_report_plots/{impedance_type}_impedance_bode_parametric.pdf")
+    plt.savefig(f"ravicz_model/final_pres_plots/{impedance_type}_impedance_bode_parametric.svg")
     plt.show()
 
 one_changed_ear = {
@@ -559,7 +756,7 @@ one_changed_ear = {
     "100": effused_middle_ear_100,
 }
 
-healthy_ear_changing_one_parameter_impedance(one_changed_ear, ear_canal=False)
+# healthy_ear_changing_one_parameter_impedance(one_changed_ear, ear_canal=False)
 
 def healthy_ear_changing_one_parameter_acoustic_reflectometry(effused_dict:dict):
     """
@@ -605,7 +802,7 @@ def healthy_ear_changing_one_parameter_acoustic_reflectometry(effused_dict:dict)
 
     plt.legend()
     
-    plt.savefig("ravicz_model/final_report_plots/param_binary_output_latex.pdf")
+    plt.savefig("ravicz_model/final_pres_plots/param_binary_output_latex.svg")
     plt.show()
 
 
